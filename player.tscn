@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://difo6q73rsy0h"]
+
+[ext_resource type="Script" uid="uid://ceiphlio2c7s4" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="PackedScene" uid="uid://c3n0xwxwsp0k8" path="res://anime_head.glb" id="2_hqtel"]
+[ext_resource type="PackedScene" uid="uid://cf3argycukfys" path="res://keith_thomson_rifle.glb" id="2_onrkg"]
+[ext_resource type="PackedScene" uid="uid://hry5gbtwsp3i" path="res://low_poly_cowboy_hat.glb" id="3_sweqy"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_8q7yx"]
+radius = 0.4
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8q7yx"]
+radius = 0.4
+
+[node name="Player" type="CharacterBody3D" unique_id=573425538]
+script = ExtResource("1_4flbx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=684408880]
+mesh = SubResource("CapsuleMesh_8q7yx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1118859045]
+shape = SubResource("CapsuleShape3D_8q7yx")
+
+[node name="Head" type="Node3D" parent="." unique_id=841140247]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2810197, -0.3939762)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=248597532]
+
+[node name="Sketchfab_Scene" parent="Head" unique_id=1268570963 instance=ExtResource("2_hqtel")]
+transform = Transform3D(-0.15, 0, -1.3113417e-08, 0, 0.15, 0, 1.3113417e-08, 0, -0.15, 0, 0, 0.22014046)
+
+[node name="Sketchfab_Scene2" parent="Head" unique_id=233522989 instance=ExtResource("3_sweqy")]
+transform = Transform3D(0.1, 0, 0, 0, 0.09513672, -0.030805936, 0, 0.030805936, 0.09513672, 0, -7.0144224, -2.457515)
+
+[node name="Label3D" type="Label3D" parent="." unique_id=1326300283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.072373, 0)
+billboard = 2
+modulate = Color(1, 0, 0, 1)
+outline_modulate = Color(1, 0, 0, 1)
+text = "♥♥♥♥♥"
+font_size = 64
+outline_size = 1
+
+[node name="gun" parent="." unique_id=1028865880 instance=ExtResource("2_onrkg")]
+transform = Transform3D(-1.4999975, 0, -0.0026179652, 0, 1.5000002, 0, 0.0026179652, 0, -1.4999975, 0.60861605, 0.50013787, -0.7753068)
+
+[node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=522166623]
+target_position = Vector3(0, 0, 100)

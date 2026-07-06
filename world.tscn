@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://c1n77lbdjna26"]
+
+[ext_resource type="PackedScene" uid="uid://difo6q73rsy0h" path="res://player.tscn" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://bdm31b5b2i1fq" path="res://world.gd" id="1_tlwt5"]
+[ext_resource type="Texture2D" uid="uid://ml4v61y7mepp" path="res://clouds_top-768x432.jpg" id="2_fj7yv"]
+[ext_resource type="Script" uid="uid://36v0fkf4dpfx" path="res://canvas_layer.gd" id="3_aqk2v"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_8q7yx"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="BoxMesh" id="BoxMesh_8q7yx"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_w8htl"]
+panorama = ExtResource("2_fj7yv")
+
+[sub_resource type="Sky" id="Sky_rvtuc"]
+sky_material = SubResource("PanoramaSkyMaterial_w8htl")
+
+[sub_resource type="Environment" id="Environment_8q7yx"]
+background_mode = 2
+sky = SubResource("Sky_rvtuc")
+
+[node name="world" type="Node3D" unique_id=320055390]
+script = ExtResource("1_tlwt5")
+player_scene = ExtResource("1_f3sb7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=482588244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.157707, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=736553125]
+shape = SubResource("BoxShape3D_8q7yx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1018748307]
+mesh = SubResource("BoxMesh_8q7yx")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=777267165]
+environment = SubResource("Environment_8q7yx")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1495981022]
+transform = Transform3D(1, 0, 0, 0, 0.8562967, 0.51648414, 0, -0.51648414, 0.8562967, 0, 24.483162, -1.1697621)
+
+[node name="AllPlayers" type="Node3D" parent="." unique_id=1027921681]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=95989485]
+script = ExtResource("3_aqk2v")
+
+[node name="Host" type="Button" parent="CanvasLayer" unique_id=1072052260]
+offset_left = 25.0
+offset_top = 41.0
+offset_right = 153.0
+offset_bottom = 137.0
+text = "HOST"
+
+[node name="Join" type="Button" parent="CanvasLayer" unique_id=552865232]
+offset_left = 25.0
+offset_top = 160.0
+offset_right = 153.0
+offset_bottom = 256.0
+text = "JOIN"
+
+[node name="IPEdit" type="TextEdit" parent="CanvasLayer" unique_id=379274655]
+offset_left = 25.0
+offset_top = 284.0
+offset_right = 281.0
+offset_bottom = 348.0
