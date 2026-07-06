@@ -25,6 +25,9 @@ func _unhandled_input(event):
 	
 	if !is_multiplayer_authority():
 		return
+	if event is InputEventMouseButton:
+		if event.button_index == 1:
+			shoot()
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		head.rotate_x(-event.relative.y * mouse_sensitivity)
@@ -37,14 +40,13 @@ func _physics_process(delta):
 	
 	$gun.rotation.x = -$Head.rotation.x
 	
-	if $gun/RayCast3D.get_collider_rid() != null:
-			print($gun/RayCast3D.get_collider_rid())
+	$Label3D.text = "♥".repeat(health / 20)	
 	
 	if !is_multiplayer_authority():
 		return
+		
 	
-	if is_multiplayer_authority():
-		send_transform.rpc(global_position, rotation, $Head.rotation.x)
+	send_transform.rpc(global_position, rotation, $Head.rotation.x) # we can do this since we know by now we're multiplayer authority
 	
 	if not is_on_floor():
 		velocity.y -= gravity * delta
@@ -75,7 +77,22 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 	global_position = pos
 	rotation = rot
 	$Head.rotation.x = pitch
+
 	
-@rpc("any_peer", "reliable")
+func shoot():
+	$gun/RayCast3D.force_raycast_update()
+
+	if $gun/RayCast3D.is_colliding():
+		var hit = $gun/RayCast3D.get_collider()
+		if hit:
+			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
+			
 func take_damage(amount: int):
 	health -= amount
+	update_health.rpc(health)
+	print("took dmg, so i")
+	print(get_multiplayer_authority())
+
+@rpc("authority", "reliable")
+func update_health(h):
+	health = h

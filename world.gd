@@ -35,3 +35,8 @@ func _peer_disconnected(id):
 	if player_nodes.has(id):
 		player_nodes[id].queue_free()
 		player_nodes.erase(id)
+
+@rpc("any_peer", "reliable")
+func shoot_rpc(hit_id: int):
+	if player_nodes.has(hit_id):
+		player_nodes[hit_id].take_damage(10)

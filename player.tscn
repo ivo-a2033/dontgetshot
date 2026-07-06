@@ -41,7 +41,7 @@ font_size = 64
 outline_size = 1
 
 [node name="gun" parent="." unique_id=1028865880 instance=ExtResource("2_onrkg")]
-transform = Transform3D(-1.4999975, 0, -0.0026179652, 0, 1.5000002, 0, 0.0026179652, 0, -1.4999975, 0.60861605, 0.50013787, -0.7753068)
+transform = Transform3D(-1.4997714, 0, -0.026178587, 0, 1.5000002, 0, 0.026178587, 0, -1.4997714, 0.60861605, 0.50013787, -0.7753068)
 
 [node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=522166623]
 target_position = Vector3(0, 0, 100)
