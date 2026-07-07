@@ -1,6 +1,11 @@
 extends CharacterBody3D
 
-@export var speed := 6.0
+
+var speed = 0
+@export var sprintspeed := 12.0
+@export var normalspeed := 8.0
+@export var crouchspeed := 4.0
+
 @export var jump_velocity := 4.5
 @export var mouse_sensitivity := 0.0025
 
@@ -15,6 +20,7 @@ func _ready():
 	if is_multiplayer_authority():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		$Head/Camera3D.current = true
+		$Head/Sketchfab_Scene2.hide()
 	else:
 		$Head/Camera3D.current = false	
 
@@ -22,17 +28,21 @@ func _unhandled_input(event):
 	
 	if event.is_action_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-	
+	if event is InputEventMouseButton:
+		if event.button_index == 3:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		
 	if !is_multiplayer_authority():
 		return
 	if event is InputEventMouseButton:
-		if event.button_index == 1:
+		if event.button_index == 1 and event.pressed:
 			shoot()
 	if event is InputEventMouseMotion:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		head.rotate_x(-event.relative.y * mouse_sensitivity)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 		
+
 
 	
 
@@ -53,7 +63,16 @@ func _physics_process(delta):
 
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = jump_velocity
+	if Input.is_action_pressed("sprint"):
+		speed = sprintspeed
+	elif Input.is_action_pressed("crouch"):
+		speed = crouchspeed
+		go_down.rpc(1)
+	else:
+		speed = normalspeed
+		go_down.rpc(0)
 
+		
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 
 	var direction = (
@@ -80,11 +99,12 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 
 	
 func shoot():
+	$AudioStreamPlayer3D.play()
 	$gun/RayCast3D.force_raycast_update()
 
 	if $gun/RayCast3D.is_colliding():
 		var hit = $gun/RayCast3D.get_collider()
-		if hit:
+		if hit and is_instance_of(hit, CharacterBody3D):
 			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
 			
 func take_damage(amount: int):
@@ -92,7 +112,16 @@ func take_damage(amount: int):
 	update_health.rpc(health)
 	print("took dmg, so i")
 	print(get_multiplayer_authority())
+	
+@rpc("any_peer", "call_local", "reliable")
+func go_down(val):
+	if val:
+		$MeshInstance3D.position.y = -0.4
+		$Head.position.y = 0.8
+	else:
+		$MeshInstance3D.position.y = 0
+		$Head.position.y = 1.28
 
-@rpc("authority", "reliable")
+@rpc("any_peer", "reliable")
 func update_health(h):
 	health = h

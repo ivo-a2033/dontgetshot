@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c3n0xwxwsp0k8" path="res://anime_head.glb" id="2_hqtel"]
 [ext_resource type="PackedScene" uid="uid://cf3argycukfys" path="res://keith_thomson_rifle.glb" id="2_onrkg"]
 [ext_resource type="PackedScene" uid="uid://hry5gbtwsp3i" path="res://low_poly_cowboy_hat.glb" id="3_sweqy"]
+[ext_resource type="AudioStream" uid="uid://rxkqqyxcbo3u" path="res://explosion.wav" id="5_sweqy"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8q7yx"]
 radius = 0.4
@@ -13,6 +14,8 @@ radius = 0.4
 
 [node name="Player" type="CharacterBody3D" unique_id=573425538]
 script = ExtResource("1_4flbx")
+jump_velocity = 7.0
+mouse_sensitivity = 0.006
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=684408880]
 mesh = SubResource("CapsuleMesh_8q7yx")
@@ -21,7 +24,7 @@ mesh = SubResource("CapsuleMesh_8q7yx")
 shape = SubResource("CapsuleShape3D_8q7yx")
 
 [node name="Head" type="Node3D" parent="." unique_id=841140247]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2810197, -0.3939762)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, -0.394)
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=248597532]
 
@@ -29,10 +32,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2810197, -0.3939762)
 transform = Transform3D(-0.15, 0, -1.3113417e-08, 0, 0.15, 0, 1.3113417e-08, 0, -0.15, 0, 0, 0.22014046)
 
 [node name="Sketchfab_Scene2" parent="Head" unique_id=233522989 instance=ExtResource("3_sweqy")]
-transform = Transform3D(0.1, 0, 0, 0, 0.09513672, -0.030805936, 0, 0.030805936, 0.09513672, 0, -7.0144224, -2.457515)
+transform = Transform3D(-0.1, 2.7015126e-09, -8.314401e-09, 0, 0.095105655, 0.0309017, 8.742278e-09, 0.0309017, -0.095105655, 0, -7.125, -1.631)
 
 [node name="Label3D" type="Label3D" parent="." unique_id=1326300283]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.072373, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5291233, 0)
 billboard = 2
 modulate = Color(1, 0, 0, 1)
 outline_modulate = Color(1, 0, 0, 1)
@@ -45,3 +48,6 @@ transform = Transform3D(-1.4997714, 0, -0.026178587, 0, 1.5000002, 0, 0.02617858
 
 [node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=522166623]
 target_position = Vector3(0, 0, 100)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=291826529]
+stream = ExtResource("5_sweqy")

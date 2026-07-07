@@ -4,12 +4,13 @@
 [ext_resource type="Script" uid="uid://bdm31b5b2i1fq" path="res://world.gd" id="1_tlwt5"]
 [ext_resource type="Texture2D" uid="uid://ml4v61y7mepp" path="res://clouds_top-768x432.jpg" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://36v0fkf4dpfx" path="res://canvas_layer.gd" id="3_aqk2v"]
+[ext_resource type="PackedScene" uid="uid://lb4d5vgcn67y" path="res://citymod.glb" id="5_036b0"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_8q7yx"]
-size = Vector3(100, 1, 100)
+size = Vector3(170, 1, 170)
 
 [sub_resource type="BoxMesh" id="BoxMesh_8q7yx"]
-size = Vector3(100, 1, 100)
+size = Vector3(170, 1, 170)
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_w8htl"]
 panorama = ExtResource("2_fj7yv")
@@ -64,3 +65,6 @@ offset_left = 25.0
 offset_top = 284.0
 offset_right = 281.0
 offset_bottom = 348.0
+
+[node name="citymod" parent="." unique_id=791352684 instance=ExtResource("5_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.964462, -3.580045, 30.338852)
