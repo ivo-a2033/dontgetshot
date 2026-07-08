@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://djhu5ly0v4csw"]
+
+[ext_resource type="PackedScene" uid="uid://olbts0ce6dqk" path="res://Fast Run.fbx" id="1_qrfr7"]
+[ext_resource type="Texture2D" uid="uid://chj2xg6xhchom" path="res://tungwalks_tung__sahur__game_3d_model_no_ai__free__download_0.jpg" id="2_8wmnc"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qwfrg"]
+albedo_texture = ExtResource("2_8wmnc")
+
+[node name="Fast Run" unique_id=1319882702 instance=ExtResource("1_qrfr7")]
+
+[node name="Skeleton3D" parent="." index="0" unique_id=2094283989]
+bones/0/position = Vector3(-9.749952e-06, 0.011735425, 0.00021128397)
+bones/0/rotation = Quaternion(0.16325878, -0.11785275, -0.036079954, 0.9788542)
+bones/1/rotation = Quaternion(-0.014094692, 0.060377546, 0.032334942, 0.9975522)
+bones/2/rotation = Quaternion(0.03507695, 0.02282459, 0.0032348598, 0.9991188)
+bones/3/rotation = Quaternion(0.035103526, 0.022584777, 0.0043269903, 0.9991191)
+bones/4/rotation = Quaternion(0.012314646, 0.0025035273, 0.0031788822, 0.9999161)
+bones/5/rotation = Quaternion(-0.1467461, 0.022789598, -0.010532357, 0.98885554)
+bones/7/rotation = Quaternion(-0.5786518, -0.4200278, 0.46156743, -0.525066)
+bones/8/position = Vector3(-1.4021687e-12, 0.0018906639, -9.427296e-12)
+bones/8/rotation = Quaternion(0.551686, 0.476834, 0.006601625, 0.68427217)
+bones/9/position = Vector3(6.32238e-12, 0.0030539003, 9.537302e-13)
+bones/9/rotation = Quaternion(-0.12237643, 0.28108433, 0.29582626, 0.9047113)
+bones/10/rotation = Quaternion(-0.0050919536, -0.2721801, 0.005586179, 0.9622167)
+bones/11/rotation = Quaternion(0.54390705, -0.009735659, 0.39201173, 0.7418876)
+bones/12/position = Vector3(-7.0426508e-12, 0.00032115984, 5.5154965e-12)
+bones/12/rotation = Quaternion(0.3157076, -0.0029137144, 0.22786953, 0.921084)
+bones/13/rotation = Quaternion(0.36879513, -0.03770854, 0.30778816, 0.8762618)
+bones/15/rotation = Quaternion(0.59307915, -0.39012992, 0.38700515, 0.58845806)
+bones/16/position = Vector3(1.4278544e-12, 0.0018906639, -9.423667e-12)
+bones/16/rotation = Quaternion(0.5802616, 0.12226842, -0.1792637, 0.78499144)
+bones/17/position = Vector3(2.8326877e-11, 0.0030491322, 3.6315135e-12)
+bones/17/rotation = Quaternion(-0.2244105, -0.25381708, -0.5427553, 0.7685269)
+bones/18/position = Vector3(-4.777679e-12, 0.0039050397, 7.2419466e-12)
+bones/18/rotation = Quaternion(0.0024393648, 0.95624846, -0.18436241, 0.22714181)
+bones/19/position = Vector3(-3.2275398e-14, 0.010359577, 2.0829345e-13)
+bones/19/rotation = Quaternion(-0.026812462, 0.006576933, 0.6650276, 0.7463084)
+bones/20/position = Vector3(-8.890458e-15, 0.00048734303, 1.2450214e-12)
+bones/20/rotation = Quaternion(-0.03439384, -0.005605368, 0.5099035, 0.8595255)
+bones/21/rotation = Quaternion(-0.29307327, -0.12377594, 0.45916304, 0.82943165)
+bones/23/rotation = Quaternion(0.104398325, 0.6106106, 0.7744724, -0.1282505)
+bones/24/position = Vector3(5.781094e-13, 0.0054375143, 2.7988885e-13)
+bones/24/rotation = Quaternion(-0.8929233, -0.030019144, 0.047085308, 0.44673228)
+bones/25/position = Vector3(9.961628e-13, 0.005431602, 4.4651022e-11)
+bones/25/rotation = Quaternion(0.17555937, -0.05286113, 0.16382055, 0.9693026)
+bones/26/rotation = Quaternion(0.26633483, -0.0017590448, -0.001315073, 0.96387804)
+bones/28/rotation = Quaternion(-0.05908288, 0.15574579, 0.9837051, -0.06765177)
+bones/29/position = Vector3(-1.2519979e-12, 0.005438048, 3.2572963e-12)
+bones/29/rotation = Quaternion(-0.41833794, -0.052614406, 0.027362546, 0.9063534)
+bones/30/position = Vector3(-8.6736195e-13, 0.005421453, 3.688825e-11)
+bones/30/rotation = Quaternion(0.77838296, 0.048617832, -0.084652446, 0.6201534)
+bones/31/position = Vector3(9.174493e-12, 0.0040662433, -4.524533e-11)
+bones/31/rotation = Quaternion(0.36839342, 0.023518775, 0.00669301, 0.9293484)
+
+[node name="Foot_LP_Plane_001_Sahur_0" parent="Skeleton3D" index="0" unique_id=939211426]
+surface_material_override/0 = SubResource("StandardMaterial3D_qwfrg")

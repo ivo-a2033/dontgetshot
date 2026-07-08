@@ -15,6 +15,8 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 @onready var camera = $Head/Camera3D
 
 var health = 100
+var last_position = Vector3.ZERO
+var focused = true
 
 func _ready():
 	if is_multiplayer_authority():
@@ -24,21 +26,28 @@ func _ready():
 		$Head/Camera3D.current = false	
 		
 	$tungwalks/AnimationPlayer.play("Armature|mixamo_com|Layer0")
-		
+	$"Fast Run/AnimationPlayer".play("mixamo_com")
+
 func _unhandled_input(event):
 	
 	if event.is_action_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		focused = false
 	if event is InputEventMouseButton:
 		if event.button_index == 3:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		
+			focused = true
+		if event.button_index == 5:
+			$Head/Camera3D.fov *= 1.2
+		if event.button_index == 4:
+			$Head/Camera3D.fov /= 1.2
+		$Head/Camera3D.fov = clamp($Head/Camera3D.fov, 5, 360)
 	if !is_multiplayer_authority():
 		return
 	if event is InputEventMouseButton:
 		if event.button_index == 1 and event.pressed:
 			shoot()
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion and focused:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		head.rotate_x(-event.relative.y * mouse_sensitivity)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
@@ -55,8 +64,24 @@ func _physics_process(delta):
 	$Label3D.text = "♥".repeat(health / 20)	
 	
 	if !is_multiplayer_authority():
+		var dist = (position - last_position).length()
+		var move_speed = dist / delta
+
+		if move_speed > 0.05:
+			$tungwalks/AnimationPlayer.play("Armature|mixamo_com|Layer0")
+
+			# Adjust to your game's speeds.
+			if move_speed > (normalspeed + sprintspeed) * 0.5:
+				$tungwalks.hide()
+				$"Fast Run".show()
+			else:
+				$tungwalks.show()
+				$"Fast Run".hide()
+		else:
+			$tungwalks/AnimationPlayer.stop()
+
+		last_position = position
 		return
-		
 	
 	send_transform.rpc(global_position, rotation, $Head.rotation.x) # we can do this since we know by now we're multiplayer authority
 	
@@ -70,9 +95,23 @@ func _physics_process(delta):
 	elif Input.is_action_pressed("crouch"):
 		speed = crouchspeed
 		go_down.rpc(1)
-	else:
+	elif Input.is_action_pressed("move_forward"):
 		speed = normalspeed
 		go_down.rpc(0)
+	else:
+		$tungwalks/AnimationPlayer.stop()
+		
+	if Input.is_action_pressed("move_forward"):
+
+		$tungwalks/AnimationPlayer.play("Armature|mixamo_com|Layer0")
+
+		if speed == sprintspeed:
+			$tungwalks.hide()
+			$"Fast Run".show()
+
+		else:
+			$"Fast Run".hide()
+			$tungwalks.show()
 
 		
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
