@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://taukd5hyvvla"]
+
+[ext_resource type="Script" uid="uid://ceiphlio2c7s4" path="res://player.gd" id="1_bhnal"]
+[ext_resource type="PackedScene" uid="uid://cf3argycukfys" path="res://keith_thomson_rifle.glb" id="4_61wwb"]
+[ext_resource type="PackedScene" uid="uid://qgc8vykerg7n" path="res://tungwalks.tscn" id="4_tj0vx"]
+[ext_resource type="AudioStream" uid="uid://rxkqqyxcbo3u" path="res://explosion.wav" id="5_2dedv"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_8q7yx"]
+radius = 0.4
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8q7yx"]
+radius = 0.3
+
+[node name="Player" type="CharacterBody3D" unique_id=573425538]
+script = ExtResource("1_bhnal")
+jump_velocity = 7.0
+mouse_sensitivity = 0.006
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=684408880]
+visible = false
+mesh = SubResource("CapsuleMesh_8q7yx")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1118859045]
+shape = SubResource("CapsuleShape3D_8q7yx")
+
+[node name="Head" type="Node3D" parent="." unique_id=841140247]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, -0.394)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=248597532]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.02279)
+
+[node name="Label3D" type="Label3D" parent="." unique_id=1326300283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5291233, 0)
+billboard = 2
+modulate = Color(1, 0, 0, 1)
+outline_modulate = Color(1, 0, 0, 1)
+text = "♥♥♥♥♥"
+font_size = 64
+outline_size = 1
+
+[node name="gun" parent="." unique_id=1028865880 instance=ExtResource("4_61wwb")]
+transform = Transform3D(-1.4997714, 0, -0.026178587, 0, 1.5000002, 0, 0.026178587, 0, -1.4997714, 0.23788136, 0.50013787, -0.7753068)
+
+[node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=522166623]
+target_position = Vector3(0, 0, 100)
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=291826529]
+stream = ExtResource("5_2dedv")
+
+[node name="tungwalks" parent="." unique_id=834123907 instance=ExtResource("4_tj0vx")]
+transform = Transform3D(-70, 0, -6.119594e-06, 0, 70, 0, 6.119594e-06, 0, -70, 0, -1.007026, 0)

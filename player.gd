@@ -20,10 +20,11 @@ func _ready():
 	if is_multiplayer_authority():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		$Head/Camera3D.current = true
-		$Head/Sketchfab_Scene2.hide()
 	else:
 		$Head/Camera3D.current = false	
-
+		
+	$tungwalks/AnimationPlayer.play("Armature|mixamo_com|Layer0")
+		
 func _unhandled_input(event):
 	
 	if event.is_action_pressed("ui_cancel"):
@@ -41,13 +42,14 @@ func _unhandled_input(event):
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		head.rotate_x(-event.relative.y * mouse_sensitivity)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
-		
 
 
 	
+
 
 func _physics_process(delta):
 	
+
 	$gun.rotation.x = -$Head.rotation.x
 	
 	$Label3D.text = "♥".repeat(health / 20)	

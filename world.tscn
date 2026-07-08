@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c1n77lbdjna26"]
 
-[ext_resource type="PackedScene" uid="uid://difo6q73rsy0h" path="res://player.tscn" id="1_f3sb7"]
 [ext_resource type="Script" uid="uid://bdm31b5b2i1fq" path="res://world.gd" id="1_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://taukd5hyvvla" path="res://player2.tscn" id="2_036b0"]
 [ext_resource type="Texture2D" uid="uid://ml4v61y7mepp" path="res://clouds_top-768x432.jpg" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://36v0fkf4dpfx" path="res://canvas_layer.gd" id="3_aqk2v"]
 [ext_resource type="PackedScene" uid="uid://lb4d5vgcn67y" path="res://citymod.glb" id="5_036b0"]
@@ -24,7 +24,7 @@ sky = SubResource("Sky_rvtuc")
 
 [node name="world" type="Node3D" unique_id=320055390]
 script = ExtResource("1_tlwt5")
-player_scene = ExtResource("1_f3sb7")
+player_scene = ExtResource("2_036b0")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=482588244]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.157707, 0)
