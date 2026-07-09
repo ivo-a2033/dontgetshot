@@ -20,6 +20,7 @@ sky_material = SubResource("PanoramaSkyMaterial_w8htl")
 
 [sub_resource type="Environment" id="Environment_8q7yx"]
 background_mode = 2
+background_energy_multiplier = 0.05
 sky = SubResource("Sky_rvtuc")
 
 [node name="world" type="Node3D" unique_id=320055390]
@@ -39,7 +40,8 @@ mesh = SubResource("BoxMesh_8q7yx")
 environment = SubResource("Environment_8q7yx")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1495981022]
-transform = Transform3D(1, 0, 0, 0, 0.8562967, 0.51648414, 0, -0.51648414, 0.8562967, 0, 24.483162, -1.1697621)
+transform = Transform3D(1, 0, 0, 0, 0.25713277, -0.966376, 0, 0.966376, 0.25713277, 0, 24.483162, -1.1697621)
+shadow_enabled = true
 
 [node name="AllPlayers" type="Node3D" parent="." unique_id=1027921681]
 

@@ -16,7 +16,7 @@ radius = 0.3
 script = ExtResource("1_bhnal")
 normalspeed = 6.0
 crouchspeed = 3.0
-jump_velocity = 7.0
+jump_velocity = 9
 mouse_sensitivity = 0.006
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=684408880]
@@ -32,9 +32,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, -0.394)
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=248597532]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.02279)
 
+[node name="Label3D" type="Label3D" parent="Head/Camera3D" unique_id=81698021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.238, -1.2977684, -47.884003)
+ignore_occlusion_culling = true
+modulate = Color(0, 0, 1, 1)
+outline_modulate = Color(0, 0, 0, 0)
+text = "x"
+font_size = 128
+
 [node name="Label3D" type="Label3D" parent="." unique_id=1326300283]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5291233, 0)
 billboard = 2
+shaded = true
 modulate = Color(1, 0, 0, 1)
 outline_modulate = Color(1, 0, 0, 1)
 text = "♥♥♥♥♥"
@@ -42,7 +51,7 @@ font_size = 64
 outline_size = 1
 
 [node name="gun" parent="." unique_id=1028865880 instance=ExtResource("4_61wwb")]
-transform = Transform3D(-1.4997714, 0, -0.026178587, 0, 1.5000002, 0, 0.026178587, 0, -1.4997714, 0.23788136, 0.50013787, -0.7753068)
+transform = Transform3D(-1.4999998, 0, -1.3113414e-07, 0, 1.5000002, 0, 1.3113414e-07, 0, -1.4999998, 0.23788136, 0.50013787, -0.7753068)
 
 [node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=522166623]
 target_position = Vector3(0, 0, 100)
@@ -55,4 +64,3 @@ transform = Transform3D(-70, 0, -6.119594e-06, 0, 70, 0, 6.119594e-06, 0, -70, 0
 
 [node name="Fast Run" parent="." unique_id=1319882702 instance=ExtResource("5_bhnal")]
 transform = Transform3D(-70, 0, -6.119594e-06, 0, 70, 0, 6.119594e-06, 0, -70, 0, -0.9677549, 0)
-visible = false

@@ -5,10 +5,11 @@
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qwfrg"]
 albedo_texture = ExtResource("2_8wmnc")
+normal_enabled = true
 
 [node name="Fast Run" unique_id=1319882702 instance=ExtResource("1_qrfr7")]
 
-[node name="Skeleton3D" parent="." index="0" unique_id=2094283989]
+[node name="Skeleton3D" parent="." index="0" unique_id=2009625417]
 bones/0/position = Vector3(-9.749952e-06, 0.011735425, 0.00021128397)
 bones/0/rotation = Quaternion(0.16325878, -0.11785275, -0.036079954, 0.9788542)
 bones/1/rotation = Quaternion(-0.014094692, 0.060377546, 0.032334942, 0.9975522)
@@ -52,5 +53,5 @@ bones/30/rotation = Quaternion(0.77838296, 0.048617832, -0.084652446, 0.6201534)
 bones/31/position = Vector3(9.174493e-12, 0.0040662433, -4.524533e-11)
 bones/31/rotation = Quaternion(0.36839342, 0.023518775, 0.00669301, 0.9293484)
 
-[node name="Foot_LP_Plane_001_Sahur_0" parent="Skeleton3D" index="0" unique_id=939211426]
+[node name="Foot_LP_Plane_001_Sahur_0" parent="Skeleton3D" index="0" unique_id=553489718]
 surface_material_override/0 = SubResource("StandardMaterial3D_qwfrg")

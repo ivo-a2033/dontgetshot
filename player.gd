@@ -6,10 +6,10 @@ var speed = 0
 @export var normalspeed := 8.0
 @export var crouchspeed := 4.0
 
-@export var jump_velocity := 4.5
+@export var jump_velocity := 0
 @export var mouse_sensitivity := 0.0025
 
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
@@ -43,6 +43,7 @@ func _unhandled_input(event):
 			$Head/Camera3D.fov /= 1.2
 		$Head/Camera3D.fov = clamp($Head/Camera3D.fov, 5, 360)
 	if !is_multiplayer_authority():
+		$Head/Camera3D/Label3D.hide()
 		return
 	if event is InputEventMouseButton:
 		if event.button_index == 1 and event.pressed:
@@ -89,7 +90,7 @@ func _physics_process(delta):
 		velocity.y -= gravity * delta
 
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = jump_velocity
+		velocity.y = jump_velocity * min(speed/float(normalspeed), 1.5)
 	if Input.is_action_pressed("sprint"):
 		speed = sprintspeed
 	elif Input.is_action_pressed("crouch"):
