@@ -11,5 +11,5 @@ func setup(start: Vector3, hit: Vector3):
 	look_at(hit, Vector3.UP)
 	rotate_object_local(Vector3.RIGHT, deg_to_rad(-90))
 
-	await get_tree().create_timer(5).timeout
+	await get_tree().create_timer(0.15).timeout
 	queue_free()

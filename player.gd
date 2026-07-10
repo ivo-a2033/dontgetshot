@@ -7,12 +7,13 @@ var speed = 0
 @export var sprintspeed := 12.0
 @export var normalspeed := 8.0
 @export var crouchspeed := 4.0
+@export var spread_degrees := 2.0
 
 @export var jump_velocity := 0
 @export var mouse_sensitivity := 0.0025
 
 # --- shooting ---
-@export var fire_rate := 0.15  # seconds between shots while held
+@export var fire_rate := 0.05  # seconds between shots while held
 var shooting := false
 var shoot_cooldown := 0.0
 
@@ -216,10 +217,15 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 
 func shoot():
 	$AudioStreamPlayer3D.play()
+
+	var spread_rad = deg_to_rad(spread_degrees)
+	$gun/RayCast3D.rotation.x = randf_range(-spread_rad, spread_rad)
+	$gun/RayCast3D.rotation.y = randf_range(-spread_rad, spread_rad)
+
 	$gun/RayCast3D.force_raycast_update()
 
 	var start = $gun.global_position
-	var end = start + $gun.global_transform.basis.z * 200.0
+	var end = start + $gun/RayCast3D.global_transform.basis.z * 200.0
 
 	if $gun/RayCast3D.is_colliding():
 
@@ -227,6 +233,8 @@ func shoot():
 		if hit is CharacterBody3D:
 			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
 			end = $gun/RayCast3D.get_collision_point()
+
+	$gun/RayCast3D.rotation = Vector3.ZERO
 
 	spawn_tracer.rpc(start, end)
 
