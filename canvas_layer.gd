@@ -19,9 +19,11 @@ func _on_host_pressed():
 	hide()
 
 func _on_join_pressed():
+	print("join")
 	var peer = ENetMultiplayerPeer.new()
 	if ip_edit.text == "":
-		peer.create_client("192.168.1.72", 7777)
+		var err = peer.create_client("192.168.1.72", 7777)
+		print(err)
 	else:
 		peer.create_client(ip_edit.text, 7777)
 

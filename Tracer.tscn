@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://bwfofwxm5wvrh"]
+
+[ext_resource type="Script" uid="uid://cow4twlsc0baf" path="res://mesh_instance_3d.gd" id="1_0nqkv"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_at68u"]
+top_radius = 0.01
+bottom_radius = 0.01
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_036b0"]
+albedo_color = Color(1, 1, 0, 1)
+
+[node name="MeshInstance3D" type="MeshInstance3D" unique_id=1609565433]
+mesh = SubResource("CylinderMesh_at68u")
+surface_material_override/0 = SubResource("StandardMaterial3D_036b0")
+script = ExtResource("1_0nqkv")

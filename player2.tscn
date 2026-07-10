@@ -73,7 +73,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.8320313, -6.956909)
 visible = false
 light_energy = 5.0
-omni_range = 25.0
+omni_range = 15.0
 
 [node name="Crouching" parent="." unique_id=843760501 instance=ExtResource("6_8caby")]
 transform = Transform3D(-70, 0, -6.119594e-06, 0, 70, 0, 6.119594e-06, 0, -70, 0, -0.9167586, 0)

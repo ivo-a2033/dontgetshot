@@ -11,6 +11,11 @@ var speed = 0
 @export var jump_velocity := 0
 @export var mouse_sensitivity := 0.0025
 
+# --- shooting ---
+@export var fire_rate := 0.15  # seconds between shots while held
+var shooting := false
+var shoot_cooldown := 0.0
+
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
 
 @onready var head = $Head
@@ -69,8 +74,8 @@ func _unhandled_input(event):
 		$Head/Camera3D/Label3D.hide()
 		return
 	if event is InputEventMouseButton:
-		if event.button_index == 1 and event.pressed:
-			shoot()
+		if event.button_index == 1:
+			shooting = event.pressed
 	if event is InputEventMouseMotion and focused:
 		rotate_y(-event.relative.x * mouse_sensitivity)
 		head.rotate_x(-event.relative.y * mouse_sensitivity)
@@ -84,9 +89,16 @@ func _physics_process(delta):
 	if !is_multiplayer_authority():
 		_process_remote_animation(delta)
 		return
-		
+
 	if $gun/RayCast3D.is_colliding():
 		$Head/Camera3D/Label3D.global_position = $gun/RayCast3D.get_collision_point()
+
+	if shoot_cooldown > 0.0:
+		shoot_cooldown -= delta
+
+	if shooting and shoot_cooldown <= 0.0:
+		shoot()
+		shoot_cooldown = fire_rate
 
 	send_transform.rpc(global_position, rotation, $Head.rotation.x)
 
@@ -206,11 +218,23 @@ func shoot():
 	$AudioStreamPlayer3D.play()
 	$gun/RayCast3D.force_raycast_update()
 
-	if $gun/RayCast3D.is_colliding():
-		var hit = $gun/RayCast3D.get_collider()
-		if hit and is_instance_of(hit, CharacterBody3D):
-			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
+	var start = $gun.global_position
+	var end = start + $gun.global_transform.basis.z * 200.0
 
+	if $gun/RayCast3D.is_colliding():
+
+		var hit = $gun/RayCast3D.get_collider()
+		if hit is CharacterBody3D:
+			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
+			end = $gun/RayCast3D.get_collision_point()
+
+	spawn_tracer.rpc(start, end)
+
+@rpc("any_peer", "call_local", "unreliable")
+func spawn_tracer(start: Vector3, end: Vector3):
+	var tracer = preload("res://Tracer.tscn").instantiate()
+	get_tree().current_scene.add_child(tracer)
+	tracer.setup(start, end)
 
 func take_damage(amount: int):
 	health -= amount
