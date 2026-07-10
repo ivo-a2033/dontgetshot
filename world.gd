@@ -31,6 +31,7 @@ func spawn_player(id):
 	p.set_multiplayer_authority(id)
 
 	players.add_child(p)
+	p.position.z -= 10
 	player_nodes[id] = p
 
 func _peer_connected(id):

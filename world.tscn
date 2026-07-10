@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://taukd5hyvvla" path="res://player2.tscn" id="2_036b0"]
 [ext_resource type="Texture2D" uid="uid://ml4v61y7mepp" path="res://clouds_top-768x432.jpg" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://36v0fkf4dpfx" path="res://canvas_layer.gd" id="3_aqk2v"]
-[ext_resource type="PackedScene" uid="uid://lb4d5vgcn67y" path="res://citymod.glb" id="5_036b0"]
+[ext_resource type="PackedScene" uid="uid://d1utt3ii48p5b" path="res://cityscene.tscn" id="5_036b0"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_8q7yx"]
 size = Vector3(170, 1, 170)
@@ -20,8 +20,13 @@ sky_material = SubResource("PanoramaSkyMaterial_w8htl")
 
 [sub_resource type="Environment" id="Environment_8q7yx"]
 background_mode = 2
-background_energy_multiplier = 0.05
 sky = SubResource("Sky_rvtuc")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_0e2aq"]
+size = Vector3(26.517578, 24.680744, 18.425781)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_036b0"]
+size = Vector3(26.517578, 23.293009, 18.425781)
 
 [node name="world" type="Node3D" unique_id=320055390]
 script = ExtResource("1_tlwt5")
@@ -31,6 +36,7 @@ player_scene = ExtResource("2_036b0")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.157707, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=736553125]
+visible = false
 shape = SubResource("BoxShape3D_8q7yx")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D" unique_id=1018748307]
@@ -40,7 +46,7 @@ mesh = SubResource("BoxMesh_8q7yx")
 environment = SubResource("Environment_8q7yx")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1495981022]
-transform = Transform3D(1, 0, 0, 0, 0.25713277, -0.966376, 0, 0.966376, 0.25713277, 0, 24.483162, -1.1697621)
+transform = Transform3D(1, 0, 0, 0, -0.10452833, 0.99452186, 0, -0.99452186, -0.10452833, 0, 24.483162, -1.1697621)
 shadow_enabled = true
 
 [node name="AllPlayers" type="Node3D" parent="." unique_id=1027921681]
@@ -69,4 +75,41 @@ offset_right = 281.0
 offset_bottom = 348.0
 
 [node name="citymod" parent="." unique_id=791352684 instance=ExtResource("5_036b0")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.964462, -3.580045, 30.338852)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.896748, -3.6632347, 31.63124)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="citymod" unique_id=2048202547]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="citymod/StaticBody3D" unique_id=1323162173]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.61438, 8.699348, -83.992744)
+shape = SubResource("BoxShape3D_0e2aq")
+debug_color = Color(0.972549, 0, 0.44705883, 1)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="citymod/StaticBody3D" unique_id=1076820055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.61438, 7.153878, -65.53218)
+shape = SubResource("BoxShape3D_036b0")
+debug_color = Color(0.972549, 0, 0.44705883, 1)
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=1474797107]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.041259766, -4.158, 170.15161)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=88327406]
+visible = false
+shape = SubResource("BoxShape3D_8q7yx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2" unique_id=1107456571]
+mesh = SubResource("BoxMesh_8q7yx")
+
+[node name="citymod2" parent="." unique_id=1415914359 instance=ExtResource("5_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.638, -3.663, 196.903)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="citymod2" unique_id=2075525474]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="citymod2/StaticBody3D" unique_id=2088506254]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.61438, 8.699348, -83.992744)
+shape = SubResource("BoxShape3D_0e2aq")
+debug_color = Color(0.972549, 0, 0.44705883, 1)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="citymod2/StaticBody3D" unique_id=1381942288]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 69.61438, 7.153878, -65.53218)
+shape = SubResource("BoxShape3D_036b0")
+debug_color = Color(0.972549, 0, 0.44705883, 1)

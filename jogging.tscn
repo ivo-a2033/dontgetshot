@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://cqsa4uuivasxm"]
+
+[ext_resource type="PackedScene" uid="uid://b3gu7k13kknak" path="res://Jogging.fbx" id="1_15wgo"]
+[ext_resource type="Texture2D" uid="uid://chj2xg6xhchom" path="res://tungwalks_tung__sahur__game_3d_model_no_ai__free__download_0.jpg" id="2_0hyf7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0hyf7"]
+albedo_texture = ExtResource("2_0hyf7")
+
+[node name="Jogging" unique_id=954532905 instance=ExtResource("1_15wgo")]
+
+[node name="Skeleton3D" parent="." index="0" unique_id=72275568]
+bones/8/position = Vector3(-1.4021687e-12, 0.0018906639, -9.427296e-12)
+bones/9/position = Vector3(6.32238e-12, 0.0030539003, 9.537302e-13)
+bones/12/position = Vector3(-7.0426508e-12, 0.00032115984, 5.5154965e-12)
+bones/12/rotation = Quaternion(0, -1.3877788e-17, -6.938894e-18, 1)
+bones/13/rotation = Quaternion(-6.938894e-18, -9.7144515e-17, -1.3877788e-17, 1)
+bones/16/position = Vector3(1.4278544e-12, 0.0018906639, -9.423667e-12)
+bones/17/position = Vector3(2.8326877e-11, 0.0030491322, 3.6315135e-12)
+bones/18/position = Vector3(-4.777679e-12, 0.0039050397, 7.2419466e-12)
+bones/19/position = Vector3(-3.2275398e-14, 0.010359577, 2.0829345e-13)
+bones/20/position = Vector3(-8.890458e-15, 0.00048734303, 1.2450214e-12)
+bones/20/rotation = Quaternion(-6.938894e-18, 2.322361e-16, -1.7347235e-17, 1)
+bones/21/rotation = Quaternion(3.469447e-18, -3.903128e-18, -1.7347235e-18, 1)
+bones/24/position = Vector3(5.781094e-13, 0.0054375143, 2.7988885e-13)
+bones/25/position = Vector3(9.961628e-13, 0.005431602, 4.4651022e-11)
+bones/29/position = Vector3(-1.2519979e-12, 0.005438048, 3.2572963e-12)
+bones/30/position = Vector3(-8.6736195e-13, 0.005421453, 3.688825e-11)
+bones/31/position = Vector3(9.174493e-12, 0.0040662433, -4.524533e-11)
+
+[node name="Foot_LP_Plane_001_Sahur_0" parent="Skeleton3D" index="0" unique_id=78761403]
+surface_material_override/0 = SubResource("StandardMaterial3D_0hyf7")

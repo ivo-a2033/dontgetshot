@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://d1utt3ii48p5b"]
+
+[ext_resource type="PackedScene" uid="uid://lb4d5vgcn67y" path="res://citymod.glb" id="1_opr6s"]
+
+[node name="citymod" unique_id=791352684 instance=ExtResource("1_opr6s")]

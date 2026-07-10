@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+enum MoveState { IDLE, WALK, SPRINT, CROUCH }
+const ANIM_NAME := "mixamo_com"
 
 var speed = 0
 @export var sprintspeed := 12.0
@@ -13,23 +15,44 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
+@onready var jogging_node = $Jogging
+@onready var fast_run_node = $"Fast Run"
+@onready var crouching_node = $Crouching
+
+var move_nodes := {}
+var current_move_state := MoveState.IDLE
 
 var health = 100
 var last_position = Vector3.ZERO
 var focused = true
 
+var idle_timer := 0.0
+const IDLE_GRACE := 0.5  # seconds of no movement before we call it idle
+
+var remote_crouching := false  # set via go_down RPC, used only on non-authority peers
+
+
 func _ready():
+	move_nodes = {
+		MoveState.WALK: jogging_node,
+		MoveState.SPRINT: fast_run_node,
+		MoveState.CROUCH: crouching_node,
+	}
+	for node in move_nodes.values():
+		node.hide()
+		node.get_node("AnimationPlayer").stop()
+
+	# Idle default: jogging node visible, just not playing.
+	jogging_node.show()
+
 	if is_multiplayer_authority():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		$Head/Camera3D.current = true
 	else:
-		$Head/Camera3D.current = false	
-		
-	$tungwalks/AnimationPlayer.play("Armature|mixamo_com|Layer0")
-	$"Fast Run/AnimationPlayer".play("mixamo_com")
+		$Head/Camera3D.current = false
+
 
 func _unhandled_input(event):
-	
 	if event.is_action_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		focused = false
@@ -54,74 +77,48 @@ func _unhandled_input(event):
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 
-	
-
-
 func _physics_process(delta):
-	
-
 	$gun.rotation.x = -$Head.rotation.x
-	
-	$Label3D.text = "♥".repeat(health / 20)	
-	
+	$Label3D.text = "♥".repeat(health / 20)
+
 	if !is_multiplayer_authority():
-		var dist = (position - last_position).length()
-		var move_speed = dist / delta
-
-		if move_speed > 0.05:
-			$tungwalks/AnimationPlayer.play("Armature|mixamo_com|Layer0")
-
-			# Adjust to your game's speeds.
-			if move_speed > (normalspeed + sprintspeed) * 0.5:
-				$tungwalks.hide()
-				$"Fast Run".show()
-			else:
-				$tungwalks.show()
-				$"Fast Run".hide()
-		else:
-			$tungwalks/AnimationPlayer.stop()
-
-		last_position = position
+		_process_remote_animation(delta)
 		return
-	
-	send_transform.rpc(global_position, rotation, $Head.rotation.x) # we can do this since we know by now we're multiplayer authority
-	
+		
+	if $gun/RayCast3D.is_colliding():
+		$Head/Camera3D/Label3D.global_position = $gun/RayCast3D.get_collision_point()
+
+	send_transform.rpc(global_position, rotation, $Head.rotation.x)
+
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = jump_velocity * min(speed/float(normalspeed), 1.5)
-	if Input.is_action_pressed("sprint"):
-		speed = sprintspeed
-	elif Input.is_action_pressed("crouch"):
-		speed = crouchspeed
-		go_down.rpc(1)
-	elif Input.is_action_pressed("move_forward"):
-		speed = normalspeed
-		go_down.rpc(0)
-	else:
-		$tungwalks/AnimationPlayer.stop()
-		
-	if Input.is_action_pressed("move_forward"):
-
-		$tungwalks/AnimationPlayer.play("Armature|mixamo_com|Layer0")
-
-		if speed == sprintspeed:
-			$tungwalks.hide()
-			$"Fast Run".show()
-
-		else:
-			$"Fast Run".hide()
-			$tungwalks.show()
-
-		
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var direction = (transform.basis * Vector3(input.x, 0, input.y)).normalized()
+	var is_moving := direction.length() > 0.01
 
-	var direction = (
-		transform.basis * Vector3(input.x, 0, input.y)
-	).normalized()
+	var is_crouching := Input.is_action_pressed("crouch")
+	var is_sprinting := Input.is_action_pressed("sprint")
 
-	if direction:
+	if is_crouching:
+		speed = crouchspeed
+	elif is_sprinting:
+		speed = sprintspeed
+	else:
+		speed = normalspeed
+
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+		velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)
+
+	var desired_state := MoveState.IDLE
+	if is_crouching:
+		desired_state = MoveState.CROUCH
+	elif is_moving:
+		desired_state = MoveState.SPRINT if is_sprinting else MoveState.WALK
+
+	_set_move_state(desired_state)
+
+	if is_moving:
 		velocity.x = direction.x * speed
 		velocity.z = direction.z * speed
 	else:
@@ -129,7 +126,72 @@ func _physics_process(delta):
 		velocity.z = move_toward(velocity.z, 0.0, speed)
 
 	move_and_slide()
-	
+
+
+func _process_remote_animation(delta):
+	if remote_crouching:
+		idle_timer = 0.0
+		_set_move_state(MoveState.CROUCH)
+		last_position = position
+		return
+
+	var dist = (position - last_position).length()
+	var move_speed = dist / delta
+
+	if move_speed > 0.05:
+		idle_timer = 0.0
+		var desired_state = MoveState.SPRINT if move_speed > (normalspeed + sprintspeed) * 0.5 else MoveState.WALK
+		_set_move_state(desired_state)
+	else:
+		idle_timer += delta
+		if idle_timer >= IDLE_GRACE:
+			_set_move_state(MoveState.IDLE)
+
+	last_position = position
+
+
+func _set_move_state(new_state: MoveState) -> void:
+	if new_state == current_move_state:
+		return
+
+	var old_state := current_move_state
+
+	# IDLE's "node" is jogging_node itself, just not playing.
+	var active_node = jogging_node
+	var should_play := true
+	match new_state:
+		MoveState.WALK:
+			active_node = jogging_node
+		MoveState.SPRINT:
+			active_node = fast_run_node
+		MoveState.CROUCH:
+			active_node = crouching_node
+		MoveState.IDLE:
+			active_node = jogging_node
+			should_play = false
+
+	for state_key in move_nodes:
+		var node = move_nodes[state_key]
+		if node != active_node:
+			node.hide()
+			node.get_node("AnimationPlayer").stop()
+
+	active_node.show()
+	if should_play:
+		active_node.get_node("AnimationPlayer").play(ANIM_NAME)
+	else:
+		active_node.get_node("AnimationPlayer").stop()
+
+	# Only the authority drives the crouch mesh-offset RPC; remotes just react to it.
+	if is_multiplayer_authority():
+		if old_state == MoveState.CROUCH and new_state != MoveState.CROUCH:
+			go_down.rpc(0)
+		if new_state == MoveState.CROUCH and old_state != MoveState.CROUCH:
+			go_down.rpc(1)
+
+	current_move_state = new_state
+
+
 @rpc("any_peer", "unreliable")
 func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 	if is_multiplayer_authority():
@@ -139,7 +201,7 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 	rotation = rot
 	$Head.rotation.x = pitch
 
-	
+
 func shoot():
 	$AudioStreamPlayer3D.play()
 	$gun/RayCast3D.force_raycast_update()
@@ -148,21 +210,30 @@ func shoot():
 		var hit = $gun/RayCast3D.get_collider()
 		if hit and is_instance_of(hit, CharacterBody3D):
 			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
-			
+
+
 func take_damage(amount: int):
 	health -= amount
 	update_health.rpc(health)
 	print("took dmg, so i")
 	print(get_multiplayer_authority())
-	
+
+
 @rpc("any_peer", "call_local", "reliable")
 func go_down(val):
 	if val:
 		$MeshInstance3D.position.y = -0.4
 		$Head.position.y = 0.8
+		$gun.position.y = -0.5
+
 	else:
 		$MeshInstance3D.position.y = 0
 		$Head.position.y = 1.28
+		$gun.position.y = 0.3
+
+	if !is_multiplayer_authority():
+		remote_crouching = bool(val)
+
 
 @rpc("any_peer", "reliable")
 func update_health(h):
