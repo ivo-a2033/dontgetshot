@@ -3,6 +3,14 @@ extends CharacterBody3D
 enum MoveState { IDLE, WALK, SPRINT, CROUCH }
 const ANIM_NAME := "mixamo_com"
 
+# --- Dynamic Path Config ---
+var custom_paths := {
+	"walk": "",
+	"sprint": "",
+	"crouch": "",
+	"scale": 1.0
+}
+
 var speed = 0
 @export var sprintspeed := 12.0
 @export var normalspeed := 8.0
@@ -11,9 +19,10 @@ var speed = 0
 
 @export var jump_velocity := 0
 @export var mouse_sensitivity := 0.0025
+@export var zoom_sensitivity := 1.2
 
 # --- shooting ---
-@export var fire_rate := 0.05  # seconds between shots while held
+@export var fire_rate := 0.1
 var shooting := false
 var shoot_cooldown := 0.0
 
@@ -21,42 +30,165 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
-@onready var jogging_node = $Jogging
-@onready var fast_run_node = $"Fast Run"
-@onready var crouching_node = $Crouching
 
 var move_nodes := {}
 var current_move_state := MoveState.IDLE
 
 var health = 100
+var last_h = health
 var last_position = Vector3.ZERO
 var focused = true
+var time_since_dmg = 10
 
 var idle_timer := 0.0
-const IDLE_GRACE := 0.5  # seconds of no movement before we call it idle
+const IDLE_GRACE := 0.5
 
-var remote_crouching := false  # set via go_down RPC, used only on non-authority peers
+var remote_crouching := false
 
+# --- settings menu ---
+var settings_open := false
+var settings_menu: CanvasLayer
+var resolution_options := [
+	Vector2i(1280, 720),
+	Vector2i(1600, 900),
+	Vector2i(1920, 1080),
+	Vector2i(2560, 1440),
+	Vector2i(3840, 2160),
+]
 
 func _ready():
-	move_nodes = {
-		MoveState.WALK: jogging_node,
-		MoveState.SPRINT: fast_run_node,
-		MoveState.CROUCH: crouching_node,
-	}
-	for node in move_nodes.values():
-		node.hide()
-		node.get_node("AnimationPlayer").stop()
-
-	# Idle default: jogging node visible, just not playing.
-	jogging_node.show()
+	# Dynamically instantiate character variants instead of linking hardcoded editor nodes
+	_instantiate_dynamic_nodes()
 
 	if is_multiplayer_authority():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		$Head/Camera3D.current = true
+		_build_settings_menu()
 	else:
 		$Head/Camera3D.current = false
+		$ProgressBar.hide()
 
+func _instantiate_dynamic_nodes():
+	var path_map = {
+		MoveState.WALK: custom_paths.get("walk", ""),
+		MoveState.SPRINT: custom_paths.get("sprint", ""),
+		MoveState.CROUCH: custom_paths.get("crouch", "")
+	}
+
+	# Read the unique scale configuration value from our custom dictionary data
+	var model_scale: float = custom_paths.get("scale", 1.0)
+
+	for state in path_map:
+		var path = path_map[state]
+		if path != "":
+			var scene = load(path)
+			if scene:
+				var instance = scene.instantiate()
+				
+				# Apply individual model configuration scale variations
+				instance.scale = Vector3(model_scale, model_scale, model_scale)
+				
+				# Rotate 180 degrees around the local Y axis
+				instance.rotation.y = PI
+				
+				# Set custom baseline drop position to match your character height configuration
+				# For instance, a 2.0-unit capsule requires a -1.0 Y offset to align with the ground.
+				instance.position.y = -1.0
+				
+				add_child(instance)
+				instance.hide()
+				move_nodes[state] = instance
+
+	if move_nodes.has(MoveState.WALK):
+		move_nodes[MoveState.WALK].show()
+
+func _build_settings_menu():
+	settings_menu = CanvasLayer.new()
+	settings_menu.layer = 10
+	add_child(settings_menu)
+
+	var panel := Panel.new()
+	panel.custom_minimum_size = Vector2(340, 260)
+	panel.position = Vector2(40, 40)
+	settings_menu.add_child(panel)
+
+	var vbox := VBoxContainer.new()
+	vbox.position = Vector2(16, 16)
+	vbox.custom_minimum_size = Vector2(308, 308)
+	vbox.add_theme_constant_override("separation", 10)
+	panel.add_child(vbox)
+
+	var title := Label.new()
+	title.text = "Settings (Y to close)"
+	vbox.add_child(title)
+
+	var mouse_label := Label.new()
+	mouse_label.text = "Mouse Sensitivity"
+	vbox.add_child(mouse_label)
+
+	var mouse_sens_slider := HSlider.new()
+	mouse_sens_slider.min_value = 0.0005
+	mouse_sens_slider.max_value = 0.01
+	mouse_sens_slider.step = 0.0001
+	mouse_sens_slider.value = mouse_sensitivity
+	mouse_sens_slider.custom_minimum_size = Vector2(280, 20)
+	mouse_sens_slider.value_changed.connect(func(v): mouse_sensitivity = v)
+	vbox.add_child(mouse_sens_slider)
+
+	var zoom_label := Label.new()
+	zoom_label.text = "Zoom Sensitivity"
+	vbox.add_child(zoom_label)
+
+	var zoom_sens_slider := HSlider.new()
+	zoom_sens_slider.min_value = 1.02
+	zoom_sens_slider.max_value = 2.0
+	zoom_sens_slider.step = 0.01
+	zoom_sens_slider.value = zoom_sensitivity
+	zoom_sens_slider.custom_minimum_size = Vector2(280, 20)
+	zoom_sens_slider.value_changed.connect(func(v): zoom_sensitivity = v)
+	vbox.add_child(zoom_sens_slider)
+
+	var render_scale_label := Label.new()
+	render_scale_label.text = "Render Scale (viewport resolution)"
+	vbox.add_child(render_scale_label)
+
+	var render_scale_slider := HSlider.new()
+	render_scale_slider.min_value = 0.5
+	render_scale_slider.max_value = 2.0
+	render_scale_slider.step = 0.05
+	render_scale_slider.value = get_viewport().scaling_3d_scale
+	render_scale_slider.custom_minimum_size = Vector2(280, 20)
+	render_scale_slider.value_changed.connect(func(v): get_viewport().scaling_3d_scale = v)
+	vbox.add_child(render_scale_slider)
+
+	var res_label := Label.new()
+	res_label.text = "Window Resolution"
+	vbox.add_child(res_label)
+
+	var resolution_dropdown := OptionButton.new()
+	for res in resolution_options:
+		resolution_dropdown.add_item("%dx%d" % [res.x, res.y])
+	resolution_dropdown.custom_minimum_size = Vector2(280, 20)
+	resolution_dropdown.item_selected.connect(_on_resolution_selected)
+	vbox.add_child(resolution_dropdown)
+
+	settings_menu.visible = false
+
+func _on_resolution_selected(idx: int):
+	var res: Vector2i = resolution_options[idx]
+	var mode := DisplayServer.window_get_mode()
+	if mode == DisplayServer.WINDOW_MODE_FULLSCREEN or mode == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	DisplayServer.window_set_size(res)
+	get_window().size = res
+
+func _toggle_settings_menu():
+	settings_open = !settings_open
+	settings_menu.visible = settings_open
+	if settings_open:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED if focused else Input.MOUSE_MODE_VISIBLE)
 
 func _unhandled_input(event):
 	if event.is_action_pressed("ui_cancel"):
@@ -66,14 +198,23 @@ func _unhandled_input(event):
 		if event.button_index == 3:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 			focused = true
-		if event.button_index == 5:
-			$Head/Camera3D.fov *= 1.2
-		if event.button_index == 4:
-			$Head/Camera3D.fov /= 1.2
-		$Head/Camera3D.fov = clamp($Head/Camera3D.fov, 5, 360)
+		if not settings_open:
+			if event.button_index == 5:
+				$Head/Camera3D.fov *= zoom_sensitivity
+			if event.button_index == 4:
+				$Head/Camera3D.fov /= zoom_sensitivity
+			$Head/Camera3D.fov = clamp($Head/Camera3D.fov, 5, 360)
 	if !is_multiplayer_authority():
 		$Head/Camera3D/Label3D.hide()
 		return
+
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Y:
+		_toggle_settings_menu()
+		return
+
+	if settings_open:
+		return
+
 	if event is InputEventMouseButton:
 		if event.button_index == 1:
 			shooting = event.pressed
@@ -82,14 +223,20 @@ func _unhandled_input(event):
 		head.rotate_x(-event.relative.y * mouse_sensitivity)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
-
 func _physics_process(delta):
 	$gun.rotation.x = -$Head.rotation.x
-	$Label3D.text = "♥".repeat(health / 20)
+	$ProgressBar.value = health 
 
 	if !is_multiplayer_authority():
 		_process_remote_animation(delta)
 		return
+		
+	if last_h > health:
+		time_since_dmg = 0
+	last_h = health
+	time_since_dmg += delta
+	if time_since_dmg < 2:
+		$Head/Camera3D/CanvasLayer/ColorRect.material.set_shader_parameter("intensity", time_since_dmg)
 
 	if $gun/RayCast3D.is_colliding():
 		$Head/Camera3D/Label3D.global_position = $gun/RayCast3D.get_collision_point()
@@ -97,7 +244,7 @@ func _physics_process(delta):
 	if shoot_cooldown > 0.0:
 		shoot_cooldown -= delta
 
-	if shooting and shoot_cooldown <= 0.0:
+	if shooting and shoot_cooldown <= 0.0 and not settings_open:
 		shoot()
 		shoot_cooldown = fire_rate
 
@@ -140,7 +287,6 @@ func _physics_process(delta):
 
 	move_and_slide()
 
-
 func _process_remote_animation(delta):
 	if remote_crouching:
 		idle_timer = 0.0
@@ -162,40 +308,35 @@ func _process_remote_animation(delta):
 
 	last_position = position
 
-
 func _set_move_state(new_state: MoveState) -> void:
 	if new_state == current_move_state:
 		return
 
 	var old_state := current_move_state
 
-	# IDLE's "node" is jogging_node itself, just not playing.
-	var active_node = jogging_node
-	var should_play := true
-	match new_state:
-		MoveState.WALK:
-			active_node = jogging_node
-		MoveState.SPRINT:
-			active_node = fast_run_node
-		MoveState.CROUCH:
-			active_node = crouching_node
-		MoveState.IDLE:
-			active_node = jogging_node
-			should_play = false
+	# Safely resolve target key, treating IDLE as using the WALK node
+	var target_key = new_state
+	if new_state == MoveState.IDLE:
+		target_key = MoveState.WALK
+		
+	var active_node = move_nodes.get(target_key, null)
+	var should_play := (new_state != MoveState.IDLE)
 
 	for state_key in move_nodes:
 		var node = move_nodes[state_key]
 		if node != active_node:
 			node.hide()
-			node.get_node("AnimationPlayer").stop()
+			if node.has_node("AnimationPlayer"):
+				node.get_node("AnimationPlayer").stop()
 
-	active_node.show()
-	if should_play:
-		active_node.get_node("AnimationPlayer").play(ANIM_NAME)
-	else:
-		active_node.get_node("AnimationPlayer").stop()
+	if active_node:
+		active_node.show()
+		if active_node.has_node("AnimationPlayer"):
+			if should_play:
+				active_node.get_node("AnimationPlayer").play(ANIM_NAME)
+			else:
+				active_node.get_node("AnimationPlayer").stop()
 
-	# Only the authority drives the crouch mesh-offset RPC; remotes just react to it.
 	if is_multiplayer_authority():
 		if old_state == MoveState.CROUCH and new_state != MoveState.CROUCH:
 			go_down.rpc(0)
@@ -203,7 +344,6 @@ func _set_move_state(new_state: MoveState) -> void:
 			go_down.rpc(1)
 
 	current_move_state = new_state
-
 
 @rpc("any_peer", "unreliable")
 func send_transform(pos: Vector3, rot: Vector3, pitch: float):
@@ -213,7 +353,6 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 	global_position = pos
 	rotation = rot
 	$Head.rotation.x = pitch
-
 
 func shoot():
 	$AudioStreamPlayer3D.play()
@@ -228,14 +367,13 @@ func shoot():
 	var end = start + $gun/RayCast3D.global_transform.basis.z * 200.0
 
 	if $gun/RayCast3D.is_colliding():
-
 		var hit = $gun/RayCast3D.get_collider()
 		if hit is CharacterBody3D:
 			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
 			end = $gun/RayCast3D.get_collision_point()
+			$AudioStreamPlayer3D2.play()
 
 	$gun/RayCast3D.rotation = Vector3.ZERO
-
 	spawn_tracer.rpc(start, end)
 
 @rpc("any_peer", "call_local", "unreliable")
@@ -247,9 +385,6 @@ func spawn_tracer(start: Vector3, end: Vector3):
 func take_damage(amount: int):
 	health -= amount
 	update_health.rpc(health)
-	print("took dmg, so i")
-	print(get_multiplayer_authority())
-
 
 @rpc("any_peer", "call_local", "reliable")
 func go_down(val):
@@ -257,7 +392,6 @@ func go_down(val):
 		$MeshInstance3D.position.y = -0.4
 		$Head.position.y = 0.8
 		$gun.position.y = -0.5
-
 	else:
 		$MeshInstance3D.position.y = 0
 		$Head.position.y = 1.28
@@ -265,7 +399,6 @@ func go_down(val):
 
 	if !is_multiplayer_authority():
 		remote_crouching = bool(val)
-
 
 @rpc("any_peer", "reliable")
 func update_health(h):

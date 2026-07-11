@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://di5jeuw5ikgbg"]
+
+[ext_resource type="PackedScene" uid="uid://b1503y78h48uv" path="res://JoggingMiku.fbx" id="1_tqf43"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tqf43"]
+albedo_color = Color(0.31764707, 1, 1, 1)
+metallic = 1.0
+metallic_specular = 1.0
+roughness = 0.0
+
+[node name="JoggingMiku" unique_id=2019955713 instance=ExtResource("1_tqf43")]
+
+[node name="Skeleton3D" parent="." index="0" unique_id=1360487694]
+bones/0/position = Vector3(-0.00039639178, 0.11073038, -0.002767515)
+bones/0/rotation = Quaternion(0.03262844, -0.029844034, -0.017413462, 0.99887013)
+bones/1/rotation = Quaternion(0.018964486, 0.012533298, 0.009941757, 0.9996922)
+bones/2/rotation = Quaternion(0.050399948, 0.028686889, 0.0021685432, 0.9983147)
+bones/3/rotation = Quaternion(0.050400034, 0.028686902, 0.002168545, 0.9983147)
+bones/4/rotation = Quaternion(-0.027309868, -0.011941406, -0.013171997, 0.999469)
+bones/5/rotation = Quaternion(-0.08040913, -0.015690671, -0.0070915334, 0.9966133)
+bones/7/rotation = Quaternion(0.5722491, 0.39884987, -0.52571404, 0.48690295)
+bones/8/rotation = Quaternion(0.55161893, 0.25910527, -0.088732086, 0.78785)
+bones/9/rotation = Quaternion(-0.15206023, 0.043920167, 0.70635283, 0.689938)
+bones/11/rotation = Quaternion(0.63667405, -0.3313389, 0.5061111, 0.47823867)
+bones/12/rotation = Quaternion(0.4947778, -0.08807803, -0.009777757, 0.8644892)
+bones/13/rotation = Quaternion(-0.29100537, -0.20674065, -0.7258351, 0.5879947)
+bones/15/rotation = Quaternion(-0.008965158, 0.24637456, 0.9684593, -0.03613695)
+bones/16/rotation = Quaternion(-0.65199625, -0.009871359, 0.020299833, 0.7578862)
+bones/17/rotation = Quaternion(0.49739116, 0.03203219, 0.004103393, 0.8669252)
+bones/18/rotation = Quaternion(0.3147471, -0.040674824, 0.013570456, 0.9482066)
+bones/20/rotation = Quaternion(-0.07013175, 0.043802395, 0.99240726, -0.091053545)
+bones/21/rotation = Quaternion(-0.33998704, -0.001997011, -0.07311404, 0.9375816)
+bones/22/rotation = Quaternion(0.5890155, -0.037800025, -0.010767833, 0.8071655)
+bones/23/rotation = Quaternion(0.5121746, 0.0563657, -0.023198392, 0.8567158)
+
+[node name="PS_-_Hatsune_Miku_mesh" parent="Skeleton3D" index="1" unique_id=77522706]
+surface_material_override/0 = SubResource("StandardMaterial3D_tqf43")
