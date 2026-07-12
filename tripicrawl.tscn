@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://c7ll303cg0svk"]
+
+[ext_resource type="PackedScene" uid="uid://ckn6w7ade77fa" path="res://Low Crawl.fbx" id="1_gcsrm"]
+[ext_resource type="Texture2D" uid="uid://dvsvfvfpyffiq" path="res://tripi_tropi_0.jpg" id="2_hrmow"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hrmow"]
+albedo_texture = ExtResource("2_hrmow")
+
+[node name="Low Crawl" unique_id=52786603 instance=ExtResource("1_gcsrm")]
+
+[node name="Camera" parent="." index="0" unique_id=1213706655]
+visible = false
+
+[node name="Light" parent="." index="1" unique_id=418854454]
+visible = false
+
+[node name="Sketchfab_model" parent="." index="2" unique_id=513727380]
+visible = false
+
+[node name="Skeleton3D" parent="." index="3" unique_id=740825657]
+bones/0/position = Vector3(-0.016143145, 0.12482804, -0.23014906)
+bones/0/rotation = Quaternion(0.6387868, -0.24510114, -0.21190064, 0.6978359)
+bones/1/rotation = Quaternion(0.3393095, 0.11490664, 0.08553882, 0.92970353)
+bones/2/rotation = Quaternion(0.018748755, 0.03444615, -0.0112837395, 0.999167)
+bones/3/rotation = Quaternion(0.019285914, 0.039420947, 0.00046524653, 0.99903643)
+bones/4/rotation = Quaternion(-0.36417207, 0.03406312, -0.11307032, 0.9238147)
+bones/5/rotation = Quaternion(-0.37510565, 0.10977883, -0.01596477, 0.92032033)
+bones/7/rotation = Quaternion(0.36531353, 0.6463495, -0.4246772, 0.5181)
+bones/8/position = Vector3(-6.7910677e-10, 0.2138341, 7.239156e-10)
+bones/8/rotation = Quaternion(0.1369811, -0.9672725, -0.035684213, -0.21058658)
+bones/9/rotation = Quaternion(0.47674918, 0.7425041, 0.3889625, 0.26477528)
+bones/10/position = Vector3(1.2794209e-09, 0.23663333, -1.2859569e-09)
+bones/10/rotation = Quaternion(0.22157617, 0.93712944, -0.2692928, 0.013191206)
+bones/11/position = Vector3(2.0884516e-11, 0.022960884, -1.3924639e-11)
+bones/11/rotation = Quaternion(0.08789259, 0.99579763, 0.013874918, -0.021666821)
+bones/12/position = Vector3(2.3108093e-10, 0.032180764, -1.20084e-10)
+bones/12/rotation = Quaternion(-0.071960576, -5.8308203e-08, 0.0076843407, 0.9973779)
+bones/13/rotation = Quaternion(-0.056485254, -0.0025972966, 0.023936365, 0.9981131)
+bones/15/rotation = Quaternion(0.45159647, -0.5122914, 0.38088733, 0.6233322)
+bones/16/rotation = Quaternion(0.3955931, 0.8703927, 0.014600992, 0.2927617)
+bones/17/position = Vector3(1.1090032e-09, 0.103933215, -3.4374503e-10)
+bones/17/rotation = Quaternion(0.50510913, -0.72854733, -0.393631, 0.24318355)
+bones/18/position = Vector3(4.955045e-09, 0.23555525, -2.7193696e-09)
+bones/18/rotation = Quaternion(0.05062457, 0.71647453, -0.5110737, 0.4721284)
+bones/19/position = Vector3(1.5649115e-10, 0.030919405, 8.314305e-11)
+bones/19/rotation = Quaternion(-0.0085536055, 0.99154276, 0.122960836, 0.04062638)
+bones/20/position = Vector3(-7.769e-10, 0.03194632, -6.85607e-10)
+bones/20/rotation = Quaternion(-0.12044601, -0.0016465356, 0.13000967, 0.98416847)
+bones/21/rotation = Quaternion(0.2224637, -0.025154948, -0.1379495, 0.9648042)
+bones/23/rotation = Quaternion(0.136537, -0.24394248, 0.9572617, -0.074161656)
+bones/24/position = Vector3(-1.2536153e-10, 0.18394697, 8.3750784e-11)
+bones/24/rotation = Quaternion(-0.05585132, -0.03643179, 0.016757363, 0.99763346)
+bones/25/position = Vector3(-7.1372624e-10, 0.16868651, -8.236237e-10)
+bones/25/rotation = Quaternion(0.6117056, -0.08434164, -0.078391664, 0.7826605)
+bones/26/position = Vector3(-8.890251e-11, 0.1366283, -1.611173e-09)
+bones/26/rotation = Quaternion(0.8763314, -0.19470342, -0.025000542, 0.43989643)
+bones/28/rotation = Quaternion(0.25949278, -0.8821311, 0.09648782, 0.38104904)
+bones/29/rotation = Quaternion(-0.76314545, 0.01173279, -0.18870464, 0.6179498)
+bones/30/position = Vector3(1.4573633e-09, 0.16878583, -1.5416957e-10)
+bones/30/rotation = Quaternion(0.08616773, -0.16301677, -0.32694188, 0.92688173)
+bones/31/position = Vector3(2.3897917e-10, 0.14746973, 4.4205917e-10)
+bones/31/rotation = Quaternion(0.56688505, 0.2551739, 0.0011391677, 0.78327924)
+
+[node name="Object_4" parent="Skeleton3D" index="0" unique_id=943307999]
+surface_material_override/0 = SubResource("StandardMaterial3D_hrmow")

@@ -17,7 +17,14 @@ var character_library := [
 		"walk": "res://jogging_miku.tscn",
 		"sprint": "res://fast_run_miku.tscn",
 		"crouch": "res://crawling_miku.tscn",
-		"scale": 8
+		"scale": 10
+	},
+	
+	{
+		"walk": "res://tripijog.tscn",
+		"sprint": "res://tripirun.tscn",
+		"crouch": "res://tripicrawl.tscn",
+		"scale": 1
 	},
 ]
 

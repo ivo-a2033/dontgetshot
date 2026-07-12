@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://860aj115eqhv"]
+
+[ext_resource type="PackedScene" uid="uid://bhk73ikh4mgqb" path="res://Fast Run(1).fbx" id="1_1l288"]
+[ext_resource type="Texture2D" uid="uid://dvsvfvfpyffiq" path="res://tripi_tropi_0.jpg" id="2_576ql"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iwo0k"]
+albedo_texture = ExtResource("2_576ql")
+metallic = 1.0
+
+[node name="Fast Run(1)" unique_id=1961700635 instance=ExtResource("1_1l288")]
+
+[node name="Camera" parent="." index="0" unique_id=1069799947]
+visible = false
+
+[node name="Light" parent="." index="1" unique_id=686937282]
+visible = false
+
+[node name="Sketchfab_model" parent="." index="2" unique_id=1821878599]
+visible = false
+
+[node name="Skeleton3D" parent="." index="3" unique_id=1314527278]
+bones/0/position = Vector3(-0.0017024594, 0.39650553, -0.09993848)
+bones/0/rotation = Quaternion(0.14758757, 0.0053546894, 0.02046911, 0.9888227)
+bones/1/rotation = Quaternion(0.26117116, 0.04496363, -0.060888495, 0.96232045)
+bones/2/rotation = Quaternion(0.03239749, 0.003707835, -0.019328905, 0.99928135)
+bones/3/rotation = Quaternion(0.03243111, 0.0044356557, -0.019203437, 0.9992796)
+bones/4/rotation = Quaternion(-0.21660174, -0.014707783, 0.008091604, 0.9761157)
+bones/5/rotation = Quaternion(-0.106960855, -0.08946342, 0.09286057, 0.9858664)
+bones/7/rotation = Quaternion(0.6120355, 0.3967256, -0.44586205, 0.51887226)
+bones/8/position = Vector3(-6.7910677e-10, 0.2138341, 7.239156e-10)
+bones/8/rotation = Quaternion(0.27484408, -0.7968455, -0.3207909, 0.431962)
+bones/9/rotation = Quaternion(0.31344545, 0.8613946, 0.25572878, 0.30717137)
+bones/10/position = Vector3(1.2794209e-09, 0.23663333, -1.2859569e-09)
+bones/10/rotation = Quaternion(-0.089392304, 0.80353594, -0.2635013, 0.5262188)
+bones/11/position = Vector3(2.0884516e-11, 0.022960884, -1.3924639e-11)
+bones/11/rotation = Quaternion(-0.01695504, 0.74186045, -0.6702391, 0.011630357)
+bones/12/position = Vector3(2.3108093e-10, 0.032180764, -1.20084e-10)
+bones/12/rotation = Quaternion(0.4336597, -0.0023825197, -0.013288443, 0.9009756)
+bones/13/rotation = Quaternion(0.36120403, -0.015251544, 0.0036043143, 0.9323551)
+bones/15/rotation = Quaternion(0.5224421, -0.48257375, 0.3525096, 0.6082054)
+bones/16/rotation = Quaternion(0.4563206, 0.78483045, 0.35034558, 0.23037091)
+bones/17/position = Vector3(1.1090032e-09, 0.103933215, -3.4374503e-10)
+bones/17/rotation = Quaternion(0.49972633, -0.7338961, -0.38943604, 0.24496904)
+bones/18/position = Vector3(4.955045e-09, 0.23555525, -2.7193696e-09)
+bones/18/rotation = Quaternion(0.11993034, 0.9266315, -0.1685173, -0.31396317)
+bones/19/position = Vector3(1.5649115e-10, 0.030919405, 8.314305e-11)
+bones/19/rotation = Quaternion(-0.029807549, 0.7462733, -0.66490036, 0.009760267)
+bones/20/position = Vector3(-7.769e-10, 0.03194632, -6.85607e-10)
+bones/20/rotation = Quaternion(0.37227032, -0.06108943, 0.08472867, 0.9222277)
+bones/21/rotation = Quaternion(0.61690974, -0.0744266, -0.14987834, 0.7690381)
+bones/23/rotation = Quaternion(0.0536503, 0.4573038, 0.8747955, 0.15075731)
+bones/24/position = Vector3(-1.2536153e-10, 0.18394697, 8.3750784e-11)
+bones/24/rotation = Quaternion(-0.10890038, -0.12577476, 0.011880957, 0.985992)
+bones/25/position = Vector3(-7.1372624e-10, 0.16868651, -8.236237e-10)
+bones/25/rotation = Quaternion(0.2846223, 0.058440138, 0.23206535, 0.9282891)
+bones/26/position = Vector3(-8.890251e-11, 0.1366283, -1.611173e-09)
+bones/26/rotation = Quaternion(0.2569304, -0.19403401, 0.05191063, 0.94532686)
+bones/28/rotation = Quaternion(-0.11405629, -0.3898247, 0.9084739, -0.098504156)
+bones/29/rotation = Quaternion(-0.46329653, 0.021962253, -0.02427933, 0.88559836)
+bones/30/position = Vector3(1.4573633e-09, 0.16878583, -1.5416957e-10)
+bones/30/rotation = Quaternion(0.40898252, 0.014141002, -0.045176778, 0.9113136)
+bones/31/position = Vector3(2.3897917e-10, 0.14746973, 4.4205917e-10)
+bones/31/rotation = Quaternion(0.19454749, 0.14933094, -0.04109912, 0.96858793)
+
+[node name="Object_4" parent="Skeleton3D" index="0" unique_id=357453304]
+surface_material_override/0 = SubResource("StandardMaterial3D_iwo0k")
