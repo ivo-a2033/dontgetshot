@@ -98,7 +98,7 @@ func _setup_lobby_ui():
 	add_child(canvas)
 	
 	var hbox = HBoxContainer.new()
-	hbox.position = Vector2(50, 50)
+	hbox.position = Vector2(350, 50)
 	canvas.add_child(hbox)
 	
 	var btn_prev = Button.new()

@@ -15,7 +15,7 @@ var speed = 0
 @export var sprintspeed := 12.0
 @export var normalspeed := 8.0
 @export var crouchspeed := 4.0
-@export var spread_degrees := 2.0
+@export var spread_degrees := .2
 
 @export var jump_velocity := 0
 @export var mouse_sensitivity := 0.0025
@@ -57,6 +57,8 @@ var resolution_options := [
 ]
 
 func _ready():
+		
+
 	# Dynamically instantiate character variants instead of linking hardcoded editor nodes
 	_instantiate_dynamic_nodes()
 
@@ -67,6 +69,7 @@ func _ready():
 	else:
 		$Head/Camera3D.current = false
 		$ProgressBar.hide()
+	
 
 func _instantiate_dynamic_nodes():
 	var path_map = {
