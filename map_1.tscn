@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c42qoblfl1wqs"]
+
+[ext_resource type="Texture2D" uid="uid://pod5vkincm81" path="res://brick.jpg" id="1_thia8"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8q7yx"]
+albedo_texture = ExtResource("1_thia8")
+uv1_scale = Vector3(0.2, 0.2, 0.2)
+uv1_triplanar = true
+
+[node name="Map1" type="Node3D" unique_id=1351973995]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=744241265]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.1748047)
+use_collision = true
+size = Vector3(200, 0.1, 200)
+material = SubResource("StandardMaterial3D_8q7yx")

@@ -382,7 +382,7 @@ func shoot():
 @rpc("any_peer", "call_local", "unreliable")
 func spawn_tracer(start: Vector3, end: Vector3):
 	var tracer = preload("res://Tracer.tscn").instantiate()
-	get_tree().current_scene.add_child(tracer)
+	add_child(tracer)
 	tracer.setup(start, end)
 
 func take_damage(amount: int):
