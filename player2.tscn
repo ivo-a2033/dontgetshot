@@ -26,6 +26,7 @@ normalspeed = 6.0
 crouchspeed = 3.0
 jump_velocity = 9
 mouse_sensitivity = 0.006
+air_control = 45.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=684408880]
 visible = false

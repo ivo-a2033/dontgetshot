@@ -211,6 +211,15 @@ func _unhandled_input(event):
 				$Head/Camera3D.fov *= zoom_sensitivity
 			if event.button_index == 4:
 				$Head/Camera3D.fov /= zoom_sensitivity
+			
+			var active_key = current_move_state
+			if active_key == MoveState.IDLE:
+				active_key = MoveState.WALK
+
+			var active_node = move_nodes.get(active_key)
+			if active_node and is_multiplayer_authority():
+				active_node.visible = ($Head/Camera3D.fov >= 15.0)
+				
 			$Head/Camera3D.fov = clamp($Head/Camera3D.fov, 5, 360)
 	if !is_multiplayer_authority():
 		$Head/Camera3D/Label3D.hide()
@@ -258,9 +267,9 @@ func _physics_process(delta):
 
 	send_transform.rpc(global_position, rotation, $Head.rotation.x)
 
-	if not is_on_floor():
-		velocity.y -= gravity * delta
 
+	
+	
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input.x, 0, input.y)).normalized()
 	var is_moving := direction.length() > 0.01
@@ -300,7 +309,7 @@ func _physics_process(delta):
 	# --- Fluid Air & Ground Movement ---
 	# We use a lower interpolation rate in the air so we don't instantly kill wall jump momentum.
 	var accel = 45.0 if is_on_floor() else air_control
-	var deaccel = 45.0 if is_on_floor() else 1.0 # Slide nicely when key is released in air
+	var deaccel = 45.0 if is_on_floor() else 2.0 # Slide nicely when key is released in air
 
 	if is_moving:
 		velocity.x = move_toward(velocity.x, direction.x * speed, accel * delta)
@@ -309,6 +318,18 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x, 0.0, deaccel * delta)
 		velocity.z = move_toward(velocity.z, 0.0, deaccel * delta)
 
+	# Reset upward velocity if we bump into ANY surface above us (including tilted ramps)
+	if velocity.y > 0:
+		for col_idx in range(get_slide_collision_count()):
+			var collision := get_slide_collision(col_idx)
+			# If the collision normal points downwards, we hit something above our head
+			if collision.get_normal().y < -0.1:
+				velocity.y = 0
+				break
+
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+		
 	move_and_slide()
 
 func _process_remote_animation(delta):

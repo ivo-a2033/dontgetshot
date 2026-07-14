@@ -97,7 +97,7 @@ func _peer_disconnected(id):
 # --- Lobby Selection UI & Preview Logic ---
 
 func _setup_lobby_ui():
-	var canvas = CanvasLayer.new()
+	var canvas = $CanvasLayer
 	add_child(canvas)
 	
 	var hbox = HBoxContainer.new()
