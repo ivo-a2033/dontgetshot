@@ -22,6 +22,7 @@ func _on_host_pressed():
 	lobby.spawn_player(1, chosen_paths)
 
 	hide()
+	get_parent().get_node("Map1").init_world()
 
 func _on_join_pressed():
 	print("join")

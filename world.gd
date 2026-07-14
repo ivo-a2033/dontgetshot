@@ -64,6 +64,9 @@ func spawn_player(id: int, paths: Dictionary):
 	# Our own player just spawned — the lobby preview is no longer needed
 	if id == multiplayer.get_unique_id():
 		_clear_preview()
+		
+	if multiplayer.is_server():
+		$Map1.send_world_to_player(id)
 
 func _clear_preview():
 	if preview_player:

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dfc31tujyq1na"]
+
+[ext_resource type="Texture2D" uid="uid://pod5vkincm81" path="res://brick.jpg" id="1_87esw"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8q7yx"]
+albedo_texture = ExtResource("1_87esw")
+uv1_scale = Vector3(0.2, 0.2, 0.2)
+uv1_triplanar = true
+
+[node name="CSGBox3D" type="CSGBox3D" unique_id=1003314298]
+use_collision = true
+size = Vector3(200, 0.1, 200)
+material = SubResource("StandardMaterial3D_8q7yx")

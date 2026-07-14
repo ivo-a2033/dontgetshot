@@ -21,6 +21,11 @@ var speed = 0
 @export var mouse_sensitivity := 0.0025
 @export var zoom_sensitivity := 1.2
 
+# --- Wall Jumping Configuration ---
+@export var wall_jump_force := 10.0
+@export var wall_jump_up_force := 10.0
+@export var air_control := 5.0 # How much control the player has in the air
+
 # --- shooting ---
 @export var fire_rate := 0.1
 var shooting := false
@@ -270,8 +275,19 @@ func _physics_process(delta):
 	else:
 		speed = normalspeed
 
+	# --- Jump and Wall-Jump System ---
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)
+		var normal = get_floor_normal()
+		
+		# If the angle of the surface is very steep, it's a wall (even if is_on_floor is true)
+		if normal.y < 0.7:
+			# Wall Jump: launch away from the wall normal and upwards
+			velocity.x = normal.x * wall_jump_force
+			velocity.z = normal.z * wall_jump_force
+			velocity.y = wall_jump_up_force
+		else:
+			# Standard Jump
+			velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)
 
 	var desired_state := MoveState.IDLE
 	if is_crouching:
@@ -281,12 +297,17 @@ func _physics_process(delta):
 
 	_set_move_state(desired_state)
 
+	# --- Fluid Air & Ground Movement ---
+	# We use a lower interpolation rate in the air so we don't instantly kill wall jump momentum.
+	var accel = 45.0 if is_on_floor() else air_control
+	var deaccel = 45.0 if is_on_floor() else 1.0 # Slide nicely when key is released in air
+
 	if is_moving:
-		velocity.x = direction.x * speed
-		velocity.z = direction.z * speed
+		velocity.x = move_toward(velocity.x, direction.x * speed, accel * delta)
+		velocity.z = move_toward(velocity.z, direction.z * speed, accel * delta)
 	else:
-		velocity.x = move_toward(velocity.x, 0.0, speed)
-		velocity.z = move_toward(velocity.z, 0.0, speed)
+		velocity.x = move_toward(velocity.x, 0.0, deaccel * delta)
+		velocity.z = move_toward(velocity.z, 0.0, deaccel * delta)
 
 	move_and_slide()
 

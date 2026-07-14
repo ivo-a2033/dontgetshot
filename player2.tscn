@@ -19,6 +19,8 @@ shader_parameter/intensity = 2.0
 shader_parameter/smoothness = 0.800000038
 
 [node name="Player" type="CharacterBody3D" unique_id=573425538]
+wall_min_slide_angle = 3.1415927
+floor_max_angle = 3.1415927
 script = ExtResource("1_bhnal")
 normalspeed = 6.0
 crouchspeed = 3.0
