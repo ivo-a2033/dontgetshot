@@ -3,9 +3,19 @@ extends Node3D
 var box: PackedScene = preload("res://samplecsgbox.tscn")
 var world_boxes: Array = []
 
-# Expose parameters to tweak the size and height of the spirals
-@export var radius: float = 30.0
-@export var peak_height: float = 50.0 # Maximum height reached at the very end of the spiral
+# --- Exposed parameters to tweak the spiral generation ---
+@export var radius: Array[float] = [50.0, 70.0, 80.0]
+
+## The peak heights for each individual spiral. 
+## The size of this array will dynamically determine the total number of spirals generated.
+@export var peak_heights: Array[float] = [50.0, 50.0, 40.0]
+
+## How many full 360-degree rotations each spiral completes. (1.0 = 1 full turn, 0.5 = 180 deg)
+@export var total_revolutions: float = .5
+
+## The point (from 0.0 to 1.0) along the spiral where the climb stops and platforms become flat.
+## E.g., 0.8 means the final 20% of the spiral forms a flat ring at its peak height.
+@export_range(0.0, 1.0) var flat_cap_threshold: float = 0.8
 
 func init_world():
 	if !multiplayer.is_server():
@@ -16,42 +26,61 @@ func init_world():
 		return
 
 	var walls_per_spiral = 50
-	var total_spirals = 3
+	var total_spirals = peak_heights.size()
 	
-	# Calculate the exact mathematical incline angle required to climb to the peak height
-	# over an arc of 180 degrees (PI radians).
-	# Distance along a circular arc is ArcLength = Angle * Radius -> PI * radius
-	var arc_distance = PI * radius
-	var calculated_incline_rad = atan(peak_height / arc_distance)
+	# Compute total angle span in radians
+	var total_angle_span = total_revolutions * TAU
 	
-	# We want 3 spirals offset evenly around the circle (0, 120, and 240 degrees)
+
 	for spiral_idx in range(total_spirals):
-		var start_angle_offset = spiral_idx * (TAU / 3.0)
+		
+		# Calculate the arc length of the climbing portion of the spiral
+		var climbing_arc_distance = (total_angle_span * radius[spiral_idx]) * flat_cap_threshold
+	
+		# Fetch the specific height limit for this spiral
+		var peak_h = peak_heights[spiral_idx]
+		
+		# Incline angle for the climbing portion
+		var calculated_incline_rad = atan(peak_h / climbing_arc_distance) if climbing_arc_distance > 0 else 0.0
+		
+		# Distribute the start angles evenly around the circle
+		var start_angle_offset = spiral_idx * (TAU / 3)
 		
 		for i in range(walls_per_spiral):
+			print(radius[spiral_idx])
+
 			# Progress along the current spiral (from 0.0 to 1.0)
-			# Using (walls_per_spiral - 1) prevents dividing by zero and ensures we hit 180 deg exactly
 			var t = float(i) / float(walls_per_spiral - 1)
 			
-			# The path wraps around 180 degrees (PI radians) from its start point
-			var angle = start_angle_offset + (t * PI)
+			# Current angle based on target revolutions
+			var angle = start_angle_offset + (t * total_angle_span)
 			
-			# Position calculation (X and Z form the circle)
-			var x = cos(angle) * radius
-			var z = sin(angle) * radius
+			# Circle positioning (X and Z)
+			var x = cos(angle) * radius[spiral_idx]
+			var z = sin(angle) * radius[spiral_idx]
 			
-			# Y calculation: Climbs straight up continuously from 0 to peak_height
-			var y = t * peak_height
+			# Initialize variables for height and tilt calculation
+			var y: float
+			var pitch: float
+			
+			if t < flat_cap_threshold:
+				# 1. Climbing zone: height scales linearly up to the peak height
+				# Scale t relative to the climbing phase (from 0.0 to 1.0)
+				var t_climb = t / flat_cap_threshold
+				y = t_climb * peak_h
+				pitch = -calculated_incline_rad
+			else:
+				# 2. Flat Ring Cap zone: height is locked to peak, platform is level
+				y = peak_h+(t-flat_cap_threshold)*.1
+				pitch = 0.0
 			
 			var pos = Vector3(x, y, z)
 			
-			# Rotation calculation:
-			# 1. Yaw (rot_y): Align tangential to the circle
+			# Yaw (rot_y): Align tangentially to the circle curve
 			var rot_y = -angle
 			
-			# 2. Pitch (rot_x): Tilt the box upward along the constant climbing angle.
-			# Using a negative sign here aligns with Godot's 3D rotation convention for tilting up.
-			var rot = Vector3(-calculated_incline_rad, rot_y, 0.0)
+			# Assemble rotation (Pitch, Yaw, Roll)
+			var rot = Vector3(pitch, rot_y, 0.0)
 			
 			var data = {
 				"pos": pos,
