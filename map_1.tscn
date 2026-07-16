@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dfc31tujyq1na" path="res://samplecsgbox.tscn" id="2_1q0j8"]
 
 [node name="Map1" type="Node3D" unique_id=1351973995]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.6768799, 0)
 script = ExtResource("1_lolil")
 radius = Array[float]([25.0, 25.0, 25.0, 40.0, 40.0, 40.0, 60.0, 60.0, 60.0])
 peak_heights = Array[float]([50.0, 50.0, 50.0, 40.0, 40.0, 40.0, 35.0, 35.0, 35.0])

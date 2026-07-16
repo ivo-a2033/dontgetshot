@@ -36,12 +36,22 @@ var character_library := [
 # --- NEW: Map Library ---
 var map_library := [
 	{
-		"name": "Grasslands Map",
+		"name": "Bunkers",
 		"path": "res://shootermap3.tscn"
 	},
 	{
-		"name": "Desert Outpost",
+		"name": "Arena",
 		"path": "res://lowpoly.tscn"
+	},
+	
+	{
+		"name": "Residential",
+		"path": "res://fpsmap.tscn"
+	},
+	
+	{
+		"name": "Rings",
+		"path": "res://map_2.tscn"
 	}
 ]
 
@@ -92,6 +102,7 @@ func spawn_player(id: int, paths: Dictionary, map_path: String = ""):
 			var active_map = map_scene.instantiate()
 			active_map.name = "ActiveMap"
 			add_child(active_map)
+
 
 	var p = player_scene.instantiate()
 	p.name = str(id)
@@ -181,6 +192,16 @@ func _setup_lobby_ui():
 	btn_map_next.text = " > "
 	btn_map_next.pressed.connect(_cycle_map.bind(1))
 	map_hbox.add_child(btn_map_next)
+	
+	# For Character Label:
+	label.show_behind_parent = true
+	label.add_theme_stylebox_override("normal", StyleBoxFlat.new())
+	label.get_theme_stylebox("normal").bg_color = Color(0, 0, 0, 0.6) # Black with 60% opacity
+
+	# For Map Label:
+	map_label.show_behind_parent = true
+	map_label.add_theme_stylebox_override("normal", StyleBoxFlat.new())
+	map_label.get_theme_stylebox("normal").bg_color = Color(0, 0, 0, 0.6)
 
 func _cycle_character(direction: int):
 	current_selected_index += direction
