@@ -31,6 +31,10 @@ var speed = 0
 var shooting := false
 var shoot_cooldown := 0.0
 
+# --- Temporary Collision Disable (Phasing) ---
+@export var collision_disable_duration := .05 # Duration in seconds
+var collision_disable_timer := 0.0
+
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2.5
 
 @onready var head = $Head
@@ -62,8 +66,6 @@ var resolution_options := [
 ]
 
 func _ready():
-		
-
 	# Dynamically instantiate character variants instead of linking hardcoded editor nodes
 	_instantiate_dynamic_nodes()
 
@@ -74,7 +76,6 @@ func _ready():
 	else:
 		$Head/Camera3D.current = false
 		$ProgressBar.hide()
-	
 
 func _instantiate_dynamic_nodes():
 	var path_map = {
@@ -222,13 +223,18 @@ func _unhandled_input(event):
 				
 			$Head/Camera3D.fov = clamp($Head/Camera3D.fov, 5, 360)
 
-
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Y and is_multiplayer_authority():
 		_toggle_settings_menu()
 		return
 
 	if settings_open:
 		return
+
+	# Temp disable collision with H key
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_H and is_multiplayer_authority():
+		if collision_disable_timer <= 0.0 and has_node("CollisionShape3D"):
+			$CollisionShape3D.disabled = true
+			collision_disable_timer = collision_disable_duration
 
 	if event is InputEventMouseButton:
 		if event.button_index == 1:
@@ -253,7 +259,11 @@ func _physics_process(delta):
 	if time_since_dmg < 2:
 		$Head/Camera3D/CanvasLayer/ColorRect.material.set_shader_parameter("intensity", time_since_dmg)
 
-
+	# Process collision re-enabling timer
+	if collision_disable_timer > 0.0:
+		collision_disable_timer -= delta
+		if collision_disable_timer <= 0.0 and has_node("CollisionShape3D"):
+			$CollisionShape3D.disabled = false
 
 	if shoot_cooldown > 0.0:
 		shoot_cooldown -= delta
@@ -264,9 +274,6 @@ func _physics_process(delta):
 
 	send_transform.rpc(global_position, rotation, $Head.rotation.x)
 
-
-	
-	
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input.x, 0, input.y)).normalized()
 	var is_moving := direction.length() > 0.01

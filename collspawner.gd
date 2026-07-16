@@ -30,24 +30,33 @@ func _create_collision_for_mesh(mesh_instance: MeshInstance3D) -> void:
 			child.queue_free()
 			mesh_instance.remove_child(child)
 
-	# 2. Generate the appropriate CollisionShape3D resource from the mesh data
-	var collision_shape := CollisionShape3D.new()
-	collision_shape.name = "AutoCollisionShape"
-	
+	# 2. Generate the appropriate Collision structure
 	if use_precise_trimesh:
 		# Best for static terrain/environments (Concave shape)
+		var collision_shape := CollisionShape3D.new()
+		collision_shape.name = "AutoCollisionShape"
 		collision_shape.shape = mesh_instance.mesh.create_trimesh_shape()
+		
+		# Build a StaticBody3D parent to house our new shape
+		var static_body := StaticBody3D.new()
+		static_body.name = "AutoStaticBody"
+		
+		# Assemble the tree structure: Mesh -> StaticBody3D -> CollisionShape3D
+		mesh_instance.add_child(static_body)
+		static_body.add_child(collision_shape)
+		
+		# Ensure the static body's local transform is reset so it aligns perfectly with the mesh
+		static_body.transform = Transform3D.IDENTITY
 	else:
-		# Best for dynamic/rigid bodies or simple props (Convex shape)
-		collision_shape.shape = mesh_instance.mesh.create_convex_shape()
-
-	# 3. Build a StaticBody3D parent to house our new shape
-	var static_body := StaticBody3D.new()
-	static_body.name = "AutoStaticBody"
-	
-	# 4. Assemble the tree structure: Mesh -> StaticBody3D -> CollisionShape3D
-	mesh_instance.add_child(static_body)
-	static_body.add_child(collision_shape)
-	
-	# Ensure the static body's local transform is reset so it aligns perfectly with the mesh
-	static_body.transform = Transform3D.IDENTITY
+		# Fast, single-hull generation (QuickHull)
+		# Excellent for performance and runs almost instantly
+		var collision_shape := CollisionShape3D.new()
+		collision_shape.name = "AutoCollisionShape"
+		collision_shape.shape = mesh_instance.mesh.create_convex_shape() # No heavy V-HACD math
+		
+		var static_body := StaticBody3D.new()
+		static_body.name = "AutoStaticBody"
+		
+		mesh_instance.add_child(static_body)
+		static_body.add_child(collision_shape)
+		static_body.transform = Transform3D.IDENTITY

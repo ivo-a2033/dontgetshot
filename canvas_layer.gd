@@ -18,11 +18,26 @@ func _on_host_pressed():
 	var lobby = get_parent()
 	var chosen_paths = lobby.character_library[lobby.current_selected_index]
 	
-	# The host spawns directly via the main function
+	var default_map_node = lobby.get_node_or_null("Map1")
+	if default_map_node:
+		default_map_node.queue_free()
+		
+	if lobby.preview_map:
+		lobby.preview_map.queue_free()
+		lobby.preview_map = null
+
+	var map_data = lobby.map_library[lobby.current_map_index]
+	var map_scene = load(map_data["path"])
+	var active_map = map_scene.instantiate()
+	active_map.name = "ActiveMap"
+	lobby.add_child(active_map)
+
 	lobby.spawn_player(1, chosen_paths)
 
 	hide()
-	get_parent().get_node("Map1").init_world()
+	
+	if active_map.has_method("init_world"):
+		active_map.init_world()
 
 func _on_join_pressed():
 	print("join")
@@ -32,7 +47,6 @@ func _on_join_pressed():
 	else:
 		peer.create_client(ip_edit.text, 7777)
 
-	# Set the peer timeout: (peer_id=1 is the server, min_timeout=0, max_timeout=2000ms)
 	peer.get_peer(1).set_timeout(0, 0, 2000)
 
 	multiplayer.multiplayer_peer = peer
@@ -40,7 +54,13 @@ func _on_join_pressed():
 
 	multiplayer.connected_to_server.connect(func():
 		var lobby = get_parent()
+		
+		if lobby.preview_map:
+			lobby.preview_map.queue_free()
+			lobby.preview_map = null
+			
 		var chosen_paths = lobby.character_library[lobby.current_selected_index]
+		# Send character selection to server (server will reply with spawn_player containing the correct map)
 		lobby.tell_server_my_character.rpc(chosen_paths)
 	)
 
