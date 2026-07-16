@@ -41,15 +41,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, -0.394)
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=248597532]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.02279)
 
-[node name="Label3D" type="Label3D" parent="Head/Camera3D" unique_id=81698021]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.238, -1.2977684, -47.884003)
-ignore_occlusion_culling = true
-no_depth_test = true
-render_priority = 127
-outline_modulate = Color(0, 0, 0, 0)
-text = "+"
-font_size = 128
-
 [node name="CanvasLayer" type="CanvasLayer" parent="Head/Camera3D" unique_id=2010802502]
 
 [node name="ColorRect" type="ColorRect" parent="Head/Camera3D/CanvasLayer" unique_id=701459014]

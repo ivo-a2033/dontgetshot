@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cmy8rmvqk5naa"]
+
+[ext_resource type="Script" uid="uid://bmueun6fo52qv" path="res://map_2.gd" id="1_0nuxv"]
+[ext_resource type="PackedScene" uid="uid://dfc31tujyq1na" path="res://samplecsgbox.tscn" id="2_5wxai"]
+
+[node name="Map1" type="Node3D" unique_id=1351973995]
+script = ExtResource("1_0nuxv")
+
+[node name="CSGBox3D" parent="." unique_id=1003314298 instance=ExtResource("2_5wxai")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.1748047)
+
+[editable path="CSGBox3D"]

@@ -28,19 +28,25 @@ func _on_join_pressed():
 	print("join")
 	var peer = ENetMultiplayerPeer.new()
 	if ip_edit.text == "":
-		var err = peer.create_client("192.168.1.72", 7777)
-		print(err)
+		peer.create_client("192.168.1.72", 7777)
 	else:
 		peer.create_client(ip_edit.text, 7777)
+
+	# Set the peer timeout: (peer_id=1 is the server, min_timeout=0, max_timeout=2000ms)
+	peer.get_peer(1).set_timeout(0, 0, 2000)
 
 	multiplayer.multiplayer_peer = peer
 	is_server = false
 
-	# FIX 4: Wait until we connect safely, then send our choice up to the server
 	multiplayer.connected_to_server.connect(func():
 		var lobby = get_parent()
 		var chosen_paths = lobby.character_library[lobby.current_selected_index]
 		lobby.tell_server_my_character.rpc(chosen_paths)
+	)
+
+	multiplayer.connection_failed.connect(func():
+		multiplayer.multiplayer_peer = null
+		show()
 	)
 
 	hide()

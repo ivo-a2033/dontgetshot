@@ -26,6 +26,13 @@ var character_library := [
 		"crouch": "res://tripicrawl.tscn",
 		"scale": 1
 	},
+	
+	{
+		"walk": "res://naruto_j.tscn",
+		"sprint": "res://naruto_s.tscn",
+		"crouch": "res://naruto_c.tscn",
+		"scale": 100
+	},
 ]
 
 var current_selected_index := 0

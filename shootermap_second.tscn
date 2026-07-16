@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bp68uqd76pibl"]
+
+[ext_resource type="Script" uid="uid://crgmnlgjwnpe3" path="res://shootermap.gd" id="1_c3pgo"]
+[ext_resource type="PackedScene" uid="uid://bb8d3yssr516k" path="res://fps_map.glb" id="2_c3pgo"]
+[ext_resource type="Script" uid="uid://df3eth4wuvj5d" path="res://collspawner.gd" id="3_oea1r"]
+
+[node name="Map1" type="Node3D" unique_id=1210424418]
+script = ExtResource("1_c3pgo")
+
+[node name="Sketchfab_Scene" parent="." unique_id=896913294 instance=ExtResource("2_c3pgo")]
+script = ExtResource("3_oea1r")

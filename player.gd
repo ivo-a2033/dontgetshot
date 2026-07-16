@@ -31,7 +31,7 @@ var speed = 0
 var shooting := false
 var shoot_cooldown := 0.0
 
-var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2.5
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
@@ -221,11 +221,9 @@ func _unhandled_input(event):
 				active_node.visible = ($Head/Camera3D.fov >= 15.0)
 				
 			$Head/Camera3D.fov = clamp($Head/Camera3D.fov, 5, 360)
-	if !is_multiplayer_authority():
-		$Head/Camera3D/Label3D.hide()
-		return
 
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Y:
+
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Y and is_multiplayer_authority():
 		_toggle_settings_menu()
 		return
 
@@ -255,8 +253,7 @@ func _physics_process(delta):
 	if time_since_dmg < 2:
 		$Head/Camera3D/CanvasLayer/ColorRect.material.set_shader_parameter("intensity", time_since_dmg)
 
-	if $gun/RayCast3D.is_colliding():
-		$Head/Camera3D/Label3D.global_position = $gun/RayCast3D.get_collision_point()
+
 
 	if shoot_cooldown > 0.0:
 		shoot_cooldown -= delta
@@ -415,8 +412,8 @@ func shoot():
 		var hit = $gun/RayCast3D.get_collider()
 		if hit is CharacterBody3D:
 			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
-			end = $gun/RayCast3D.get_collision_point()
 			$AudioStreamPlayer3D2.play()
+		end = $gun/RayCast3D.get_collision_point()
 
 	$gun/RayCast3D.rotation = Vector3.ZERO
 	spawn_tracer.rpc(start, end)
