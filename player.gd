@@ -2,6 +2,7 @@ extends CharacterBody3D
 
 enum MoveState { IDLE, WALK, SPRINT, CROUCH }
 const ANIM_NAME := "mixamo_com"
+const SetupHelper := preload("res://player_helper.gd")
 
 # --- Dynamic Path Config ---
 var custom_paths := {
@@ -24,7 +25,7 @@ var speed = 0
 # --- Wall Jumping Configuration ---
 @export var wall_jump_force := 10.0
 @export var wall_jump_up_force := 10.0
-@export var air_control := 5.0 # How much control the player has in the air
+@export var air_control := 5.0
 
 # --- shooting ---
 @export var fire_rate := 0.1
@@ -32,15 +33,13 @@ var shooting := false
 var shoot_cooldown := 0.0
 
 # --- Temporary Collision Disable (Phasing) ---
-@export var collision_disable_duration := .05 # Duration in seconds
+@export var collision_disable_duration := .05
 var collision_disable_timer := 0.0
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2.5
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
-
-# --- Change this path to wherever your RayCast3D is located inside your gun node structure ---
 @onready var raycast = $gun/RayCast3D 
 
 var move_nodes := {}
@@ -61,139 +60,19 @@ var remote_crouching := false
 # --- settings menu ---
 var settings_open := false
 var settings_menu: CanvasLayer
-var resolution_options := [
-	Vector2i(1280, 720),
-	Vector2i(1600, 900),
-	Vector2i(1920, 1080),
-	Vector2i(2560, 1440),
-	Vector2i(3840, 2160),
-]
 
 func _ready():
-	# Dynamically instantiate character variants instead of linking hardcoded editor nodes
-	_instantiate_dynamic_nodes()
+	SetupHelper.instantiate_move_nodes(self, custom_paths, move_nodes)
 
 	if is_multiplayer_authority():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		$Head/Camera3D.current = true
-		_build_settings_menu()
+		settings_menu = SetupHelper.build_settings_menu(self)
+		add_child(settings_menu)
+		settings_menu.visible = false
 	else:
 		$Head/Camera3D.current = false
 		$ProgressBar.hide()
-
-func _instantiate_dynamic_nodes():
-	var path_map = {
-		MoveState.WALK: custom_paths.get("walk", ""),
-		MoveState.SPRINT: custom_paths.get("sprint", ""),
-		MoveState.CROUCH: custom_paths.get("crouch", "")
-	}
-
-	# Read the unique scale configuration value from our custom dictionary data
-	var model_scale: float = custom_paths.get("scale", 1.0)
-
-	for state in path_map:
-		var path = path_map[state]
-		if path != "":
-			var scene = load(path)
-			if scene:
-				var instance = scene.instantiate()
-				
-				# Apply individual model configuration scale variations
-				instance.scale = Vector3(model_scale, model_scale, model_scale)
-				
-				# Rotate 180 degrees around the local Y axis
-				instance.rotation.y = PI
-				
-				# Set custom baseline drop position to match your character height configuration
-				# For instance, a 2.0-unit capsule requires a -1.0 Y offset to align with the ground.
-				instance.position.y = -1.0
-				
-				add_child(instance)
-				instance.hide()
-				move_nodes[state] = instance
-
-	if move_nodes.has(MoveState.WALK):
-		move_nodes[MoveState.WALK].show()
-
-func _build_settings_menu():
-	settings_menu = CanvasLayer.new()
-	settings_menu.layer = 10
-	add_child(settings_menu)
-
-	var panel := Panel.new()
-	panel.custom_minimum_size = Vector2(340, 260)
-	panel.position = Vector2(40, 40)
-	settings_menu.add_child(panel)
-
-	var vbox := VBoxContainer.new()
-	vbox.position = Vector2(16, 16)
-	vbox.custom_minimum_size = Vector2(308, 308)
-	vbox.add_theme_constant_override("separation", 10)
-	panel.add_child(vbox)
-
-	var title := Label.new()
-	title.text = "Settings (Y to close)"
-	vbox.add_child(title)
-
-	var mouse_label := Label.new()
-	mouse_label.text = "Mouse Sensitivity"
-	vbox.add_child(mouse_label)
-
-	var mouse_sens_slider := HSlider.new()
-	mouse_sens_slider.min_value = 0.0005
-	mouse_sens_slider.max_value = 0.01
-	mouse_sens_slider.step = 0.0001
-	mouse_sens_slider.value = mouse_sensitivity
-	mouse_sens_slider.custom_minimum_size = Vector2(280, 20)
-	mouse_sens_slider.value_changed.connect(func(v): mouse_sensitivity = v)
-	vbox.add_child(mouse_sens_slider)
-
-	var zoom_label := Label.new()
-	zoom_label.text = "Zoom Sensitivity"
-	vbox.add_child(zoom_label)
-
-	var zoom_sens_slider := HSlider.new()
-	zoom_sens_slider.min_value = 1.02
-	zoom_sens_slider.max_value = 2.0
-	zoom_sens_slider.step = 0.01
-	zoom_sens_slider.value = zoom_sensitivity
-	zoom_sens_slider.custom_minimum_size = Vector2(280, 20)
-	zoom_sens_slider.value_changed.connect(func(v): zoom_sensitivity = v)
-	vbox.add_child(zoom_sens_slider)
-
-	var render_scale_label := Label.new()
-	render_scale_label.text = "Render Scale (viewport resolution)"
-	vbox.add_child(render_scale_label)
-
-	var render_scale_slider := HSlider.new()
-	render_scale_slider.min_value = 0.5
-	render_scale_slider.max_value = 2.0
-	render_scale_slider.step = 0.05
-	render_scale_slider.value = get_viewport().scaling_3d_scale
-	render_scale_slider.custom_minimum_size = Vector2(280, 20)
-	render_scale_slider.value_changed.connect(func(v): get_viewport().scaling_3d_scale = v)
-	vbox.add_child(render_scale_slider)
-
-	var res_label := Label.new()
-	res_label.text = "Window Resolution"
-	vbox.add_child(res_label)
-
-	var resolution_dropdown := OptionButton.new()
-	for res in resolution_options:
-		resolution_dropdown.add_item("%dx%d" % [res.x, res.y])
-	resolution_dropdown.custom_minimum_size = Vector2(280, 20)
-	resolution_dropdown.item_selected.connect(_on_resolution_selected)
-	vbox.add_child(resolution_dropdown)
-
-	settings_menu.visible = false
-
-func _on_resolution_selected(idx: int):
-	var res: Vector2i = resolution_options[idx]
-	var mode := DisplayServer.window_get_mode()
-	if mode == DisplayServer.WINDOW_MODE_FULLSCREEN or mode == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_set_size(res)
-	get_window().size = res
 
 func _toggle_settings_menu():
 	settings_open = !settings_open
@@ -234,7 +113,6 @@ func _unhandled_input(event):
 	if settings_open:
 		return
 
-	# Temp disable collision with H key
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_H and is_multiplayer_authority():
 		if collision_disable_timer <= 0.0 and has_node("CollisionShape3D"):
 			$CollisionShape3D.disabled = true
@@ -256,12 +134,9 @@ func _physics_process(delta):
 		_process_remote_animation(delta)
 		return
 		
-	# --- Gun Aiming Math ---
-	# 1. Get the 3D point the camera is looking at
 	var camera_forward = -camera.global_transform.basis.z
 	var target_point = camera.global_position + (camera_forward * max_aim_distance)
 
-	# Check if we are looking directly at a surface (wall/enemy) to snap to it
 	var space_state = get_world_3d().direct_space_state
 	var query = PhysicsRayQueryParameters3D.create(raycast.global_position, target_point)
 	query.exclude = [get_rid()] 
@@ -270,18 +145,12 @@ func _physics_process(delta):
 	if not result.is_empty():
 		target_point = result.position
 
-	# 2. Calculate the relative vector from the gun to the target
 	var gun_to_target = target_point - $gun.global_position
-
-	# Project the vector onto the player's forward direction to get horizontal distance
 	var player_forward = -global_transform.basis.z
 	var horizontal_dist = gun_to_target.dot(player_forward)
 	var vertical_dist = gun_to_target.y
-
-	# 3. Calculate the pitch angle using atan2
 	var target_pitch = atan2(vertical_dist, horizontal_dist)
 
-	# Apply the pitch to the gun's Z rotation (matching your original math direction)
 	$gun.rotation.z = -target_pitch
 		
 	if last_h > health:
@@ -291,7 +160,6 @@ func _physics_process(delta):
 	if time_since_dmg < 2:
 		$Head/Camera3D/CanvasLayer/ColorRect.material.set_shader_parameter("intensity", time_since_dmg)
 
-	# Process collision re-enabling timer
 	if collision_disable_timer > 0.0:
 		collision_disable_timer -= delta
 		if collision_disable_timer <= 0.0 and has_node("CollisionShape3D"):
@@ -320,18 +188,13 @@ func _physics_process(delta):
 	else:
 		speed = normalspeed
 
-	# --- Jump and Wall-Jump System ---
 	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		var normal = get_floor_normal()
-		
-		# If the angle of the surface is very steep, it's a wall (even if is_on_floor is true)
 		if normal.y < 0.7:
-			# Wall Jump: launch away from the wall normal and upwards
 			velocity.x = normal.x * wall_jump_force
 			velocity.z = normal.z * wall_jump_force
 			velocity.y = wall_jump_up_force
 		else:
-			# Standard Jump
 			velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)
 
 	var desired_state := MoveState.IDLE
@@ -342,10 +205,8 @@ func _physics_process(delta):
 
 	_set_move_state(desired_state)
 
-	# --- Fluid Air & Ground Movement ---
-	# We use a lower interpolation rate in the air so we don't instantly kill wall jump momentum.
 	var accel = 45.0 if is_on_floor() else air_control
-	var deaccel = 45.0 if is_on_floor() else 2.0 # Slide nicely when key is released in air
+	var deaccel = 45.0 if is_on_floor() else 2.0
 
 	if is_moving:
 		velocity.x = move_toward(velocity.x, direction.x * speed, accel * delta)
@@ -354,11 +215,9 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x, 0.0, deaccel * delta)
 		velocity.z = move_toward(velocity.z, 0.0, deaccel * delta)
 
-	# Reset upward velocity if we bump into ANY surface above us (including tilted ramps)
 	if velocity.y > 0:
 		for col_idx in range(get_slide_collision_count()):
 			var collision := get_slide_collision(col_idx)
-			# If the collision normal points downwards, we hit something above our head
 			if collision.get_normal().y < -0.1:
 				velocity.y = 0
 				break
@@ -394,8 +253,6 @@ func _set_move_state(new_state: MoveState) -> void:
 		return
 
 	var old_state := current_move_state
-
-	# Safely resolve target key, treating IDLE as using the WALK node
 	var target_key = new_state
 	if new_state == MoveState.IDLE:
 		target_key = MoveState.WALK
@@ -437,21 +294,13 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 
 func shoot():
 	$AudioStreamPlayer3D.play()
-
-	# 1. Save the clean local rotation of the raycast
 	var original_rot = raycast.rotation
-
-	# 2. Add some random spread directly inside its local space (it offsets from the gun's forward vector)
 	var spread_rad = deg_to_rad(spread_degrees)
 	raycast.rotation.x += randf_range(-spread_rad, spread_rad)
 	raycast.rotation.y += randf_range(-spread_rad, spread_rad)
 
-	# 3. Force physics system to update the ray intersections right now
 	raycast.force_raycast_update()
-
 	var start = raycast.global_position
-	
-	# 4. Grab the endpoint using global transform (handles all nested gun/head rotation seamlessly)
 	var end = raycast.global_transform * raycast.target_position
 
 	if raycast.is_colliding():
@@ -461,9 +310,7 @@ func shoot():
 			$AudioStreamPlayer3D2.play()
 		end = raycast.get_collision_point()
 
-	# 5. Restore the clean local rotation
 	raycast.rotation = original_rot
-	
 	spawn_tracer.rpc(start, end)
 
 @rpc("any_peer", "call_local", "unreliable")
@@ -481,13 +328,11 @@ func go_down(val):
 	if val:
 		$MeshInstance3D.position.y = -0.4
 		$Head.position.y = 0.8
-		# Adjust the gun visual node path below if nested differently
 		if has_node("Head/Camera3D/gun"):
 			$Head/Camera3D/gun.position.y = -0.5
 	else:
 		$MeshInstance3D.position.y = 0
 		$Head.position.y = 1.28
-		# Adjust the gun visual node path below if nested differently
 		if has_node("Head/Camera3D/gun"):
 			$Head/Camera3D/gun.position.y = 0.3
 

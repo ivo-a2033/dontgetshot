@@ -16,7 +16,7 @@ func _on_host_pressed():
 	is_server = true
 	
 	var lobby = get_parent()
-	var chosen_paths = lobby.character_library[lobby.current_selected_index]
+	var chosen_paths = lobby.LobbyHelper.character_library[lobby.current_selected_index]
 	
 	var default_map_node = lobby.get_node_or_null("Map1")
 	if default_map_node:
@@ -26,7 +26,7 @@ func _on_host_pressed():
 		lobby.preview_map.queue_free()
 		lobby.preview_map = null
 
-	var map_data = lobby.map_library[lobby.current_map_index]
+	var map_data = lobby.LobbyHelper.map_library[lobby.current_map_index]
 	var map_scene = load(map_data["path"])
 	var active_map = map_scene.instantiate()
 	active_map.name = "ActiveMap"
@@ -59,7 +59,7 @@ func _on_join_pressed():
 			lobby.preview_map.queue_free()
 			lobby.preview_map = null
 			
-		var chosen_paths = lobby.character_library[lobby.current_selected_index]
+		var chosen_paths = lobby.LobbyHelper.character_library[lobby.current_selected_index]
 		# Send character selection to server (server will reply with spawn_player containing the correct map)
 		lobby.tell_server_my_character.rpc(chosen_paths)
 	)
