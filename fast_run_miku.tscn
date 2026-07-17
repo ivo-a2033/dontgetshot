@@ -2,15 +2,16 @@
 
 [ext_resource type="PackedScene" uid="uid://chvtlhnhphgfp" path="res://Fast RunMiku.fbx" id="1_pygc6"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xvo0s"]
-albedo_color = Color(0.31764707, 1, 1, 1)
-metallic = 1.0
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pygc6"]
+transparency = 4
+blend_mode = 2
+albedo_color = Color(0.1882353, 0.6784314, 0.9411765, 0.21568628)
 metallic_specular = 1.0
 roughness = 0.0
 
 [node name="Fast RunMiku" unique_id=972261838 instance=ExtResource("1_pygc6")]
 
-[node name="Skeleton3D" parent="." index="0" unique_id=863242012]
+[node name="Skeleton3D" parent="." index="0" unique_id=1664379354]
 bones/0/position = Vector3(0.0003495944, 0.10802354, -0.004162923)
 bones/0/rotation = Quaternion(0.15843089, -0.076361395, 0.08789287, 0.98048127)
 bones/1/rotation = Quaternion(0.046519637, 0.099886164, -0.086612105, 0.9901298)
@@ -33,5 +34,5 @@ bones/21/rotation = Quaternion(-0.068003245, -0.006628137, -0.007007949, 0.99763
 bones/22/rotation = Quaternion(0.45142278, -0.11750823, 0.04091542, 0.8835923)
 bones/23/rotation = Quaternion(0.55659866, 0.038412787, -0.002975258, 0.8298876)
 
-[node name="PS_-_Hatsune_Miku_mesh" parent="Skeleton3D" index="1" unique_id=1178840465]
-surface_material_override/0 = SubResource("StandardMaterial3D_xvo0s")
+[node name="PS_-_Hatsune_Miku_mesh" parent="Skeleton3D" index="1" unique_id=722784798]
+surface_material_override/0 = SubResource("StandardMaterial3D_pygc6")

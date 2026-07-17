@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ceiphlio2c7s4" path="res://player.gd" id="1_bhnal"]
 [ext_resource type="Shader" uid="uid://c75ytp0bmd0dc" path="res://vig.gdshader" id="2_8caby"]
 [ext_resource type="AudioStream" uid="uid://b8foh15qlu5wr" path="res://fastshot.wav" id="4_8caby"]
-[ext_resource type="PackedScene" uid="uid://cf3argycukfys" path="res://keith_thomson_rifle.glb" id="4_61wwb"]
+[ext_resource type="PackedScene" uid="uid://cy7o6yfj0sasj" path="res://autogun.tscn" id="5_bhnal"]
 [ext_resource type="AudioStream" uid="uid://buu4n1fio4wnw" path="res://shothit.wav" id="8_61wwb"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8q7yx"]
@@ -50,12 +50,6 @@ offset_bottom = 450.0
 mouse_filter = 2
 color = Color(1, 0, 0, 1)
 
-[node name="gun" parent="." unique_id=1028865880 instance=ExtResource("4_61wwb")]
-transform = Transform3D(-1.4999998, 0, -1.3113414e-07, 0, 1.5000002, 0, 1.3113414e-07, 0, -1.4999998, 0.23788136, 0.50013787, -0.7753068)
-
-[node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=522166623]
-target_position = Vector3(0, 0, 100)
-
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=291826529]
 stream = ExtResource("4_8caby")
 
@@ -77,3 +71,10 @@ stream = ExtResource("8_61wwb")
 [node name="Label" type="Label" parent="." unique_id=806430979]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="gun" parent="." unique_id=695912131 instance=ExtResource("5_bhnal")]
+transform = Transform3D(-3.9340203e-10, 0, -0.0089999875, 0, 0.0074999956, 0, 0.0074999942, 0, -3.2783515e-10, 0.6174011, -0.6941285, -0.54370314)
+
+[node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=522166623]
+transform = Transform3D(-4.3711406e-08, 0, 1.0000006, 0, 1.0000005, 0, -1.0000005, 0, -4.3711424e-08, -72.88225, 108.277405, 7.6293945e-06)
+target_position = Vector3(0, 0, -1000)

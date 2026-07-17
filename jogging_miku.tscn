@@ -3,14 +3,15 @@
 [ext_resource type="PackedScene" uid="uid://b1503y78h48uv" path="res://JoggingMiku.fbx" id="1_tqf43"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tqf43"]
-albedo_color = Color(0.31764707, 1, 1, 1)
-metallic = 1.0
+transparency = 4
+blend_mode = 2
+albedo_color = Color(0.1882353, 0.6784314, 0.9411765, 0.21568628)
 metallic_specular = 1.0
 roughness = 0.0
 
 [node name="JoggingMiku" unique_id=2019955713 instance=ExtResource("1_tqf43")]
 
-[node name="Skeleton3D" parent="." index="0" unique_id=1360487694]
+[node name="Skeleton3D" parent="." index="0" unique_id=1134812595]
 bones/0/position = Vector3(-0.00039639178, 0.11073038, -0.002767515)
 bones/0/rotation = Quaternion(0.03262844, -0.029844034, -0.017413462, 0.99887013)
 bones/1/rotation = Quaternion(0.018964486, 0.012533298, 0.009941757, 0.9996922)
@@ -33,5 +34,5 @@ bones/21/rotation = Quaternion(-0.33998704, -0.001997011, -0.07311404, 0.9375816
 bones/22/rotation = Quaternion(0.5890155, -0.037800025, -0.010767833, 0.8071655)
 bones/23/rotation = Quaternion(0.5121746, 0.0563657, -0.023198392, 0.8567158)
 
-[node name="PS_-_Hatsune_Miku_mesh" parent="Skeleton3D" index="1" unique_id=77522706]
+[node name="PS_-_Hatsune_Miku_mesh" parent="Skeleton3D" index="1" unique_id=645338750]
 surface_material_override/0 = SubResource("StandardMaterial3D_tqf43")

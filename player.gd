@@ -40,6 +40,9 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2.5
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
 
+# --- Change this path to wherever your RayCast3D is located inside your gun node structure ---
+@onready var raycast = $gun/RayCast3D 
+
 var move_nodes := {}
 var current_move_state := MoveState.IDLE
 
@@ -245,9 +248,9 @@ func _unhandled_input(event):
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
-	$gun.rotation.x = -$Head.rotation.x
 	$ProgressBar.value = health 
-
+	$gun.rotation.z = -$Head.rotation.x
+	
 	if !is_multiplayer_authority():
 		_process_remote_animation(delta)
 		return
@@ -406,23 +409,32 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 func shoot():
 	$AudioStreamPlayer3D.play()
 
+	# 1. Save the clean local rotation of the raycast
+	var original_rot = raycast.rotation
+
+	# 2. Add some random spread directly inside its local space (it offsets from the gun's forward vector)
 	var spread_rad = deg_to_rad(spread_degrees)
-	$gun/RayCast3D.rotation.x = randf_range(-spread_rad, spread_rad)
-	$gun/RayCast3D.rotation.y = randf_range(-spread_rad, spread_rad)
+	raycast.rotation.x += randf_range(-spread_rad, spread_rad)
+	raycast.rotation.y += randf_range(-spread_rad, spread_rad)
 
-	$gun/RayCast3D.force_raycast_update()
+	# 3. Force physics system to update the ray intersections right now
+	raycast.force_raycast_update()
 
-	var start = $gun.global_position
-	var end = start + $gun/RayCast3D.global_transform.basis.z * 200.0
+	var start = raycast.global_position
+	
+	# 4. Grab the endpoint using global transform (handles all nested gun/head rotation seamlessly)
+	var end = raycast.global_transform * raycast.target_position
 
-	if $gun/RayCast3D.is_colliding():
-		var hit = $gun/RayCast3D.get_collider()
+	if raycast.is_colliding():
+		var hit = raycast.get_collider()
 		if hit is CharacterBody3D:
 			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
 			$AudioStreamPlayer3D2.play()
-		end = $gun/RayCast3D.get_collision_point()
+		end = raycast.get_collision_point()
 
-	$gun/RayCast3D.rotation = Vector3.ZERO
+	# 5. Restore the clean local rotation
+	raycast.rotation = original_rot
+	
 	spawn_tracer.rpc(start, end)
 
 @rpc("any_peer", "call_local", "unreliable")
@@ -440,11 +452,15 @@ func go_down(val):
 	if val:
 		$MeshInstance3D.position.y = -0.4
 		$Head.position.y = 0.8
-		$gun.position.y = -0.5
+		# Adjust the gun visual node path below if nested differently
+		if has_node("Head/Camera3D/gun"):
+			$Head/Camera3D/gun.position.y = -0.5
 	else:
 		$MeshInstance3D.position.y = 0
 		$Head.position.y = 1.28
-		$gun.position.y = 0.3
+		# Adjust the gun visual node path below if nested differently
+		if has_node("Head/Camera3D/gun"):
+			$Head/Camera3D/gun.position.y = 0.3
 
 	if !is_multiplayer_authority():
 		remote_crouching = bool(val)
