@@ -3,10 +3,12 @@
 [ext_resource type="PackedScene" uid="uid://ct48jiiuyol4s" path="res://sniper.blend" id="1_xcl07"]
 
 [node name="sniper" unique_id=58703646 instance=ExtResource("1_xcl07")]
-transform = Transform3D(0.005, 0, 0, 0, 0.005, 0, 0, 0, 0.005, -161, -256, 0)
 
 [node name="Light" parent="." index="0" unique_id=1372986927]
 visible = false
 
 [node name="Camera" parent="." index="1" unique_id=1948810234]
 visible = false
+
+[node name="combined_assets_1__0" parent="Sketchfab_model/combined_assets_1_fbx/RootNode/combined_assets_1" parent_id_path=PackedInt32Array(1594255331) index="0" unique_id=1714512049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.552415, 9.4164454e-07, -2.633029)

@@ -56,6 +56,7 @@ var idle_timer := 0.0
 const IDLE_GRACE := 0.5
 
 var remote_crouching := false
+@export var max_aim_distance := 50.0
 
 # --- settings menu ---
 var settings_open := false
@@ -254,6 +255,34 @@ func _physics_process(delta):
 	if !is_multiplayer_authority():
 		_process_remote_animation(delta)
 		return
+		
+	# --- Gun Aiming Math ---
+	# 1. Get the 3D point the camera is looking at
+	var camera_forward = -camera.global_transform.basis.z
+	var target_point = camera.global_position + (camera_forward * max_aim_distance)
+
+	# Check if we are looking directly at a surface (wall/enemy) to snap to it
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(raycast.global_position, target_point)
+	query.exclude = [get_rid()] 
+	var result = space_state.intersect_ray(query)
+	
+	if not result.is_empty():
+		target_point = result.position
+
+	# 2. Calculate the relative vector from the gun to the target
+	var gun_to_target = target_point - $gun.global_position
+
+	# Project the vector onto the player's forward direction to get horizontal distance
+	var player_forward = -global_transform.basis.z
+	var horizontal_dist = gun_to_target.dot(player_forward)
+	var vertical_dist = gun_to_target.y
+
+	# 3. Calculate the pitch angle using atan2
+	var target_pitch = atan2(vertical_dist, horizontal_dist)
+
+	# Apply the pitch to the gun's Z rotation (matching your original math direction)
+	$gun.rotation.z = -target_pitch
 		
 	if last_h > health:
 		time_since_dmg = 0

@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://ceiphlio2c7s4" path="res://player.gd" id="1_bhnal"]
 [ext_resource type="Shader" uid="uid://c75ytp0bmd0dc" path="res://vig.gdshader" id="2_8caby"]
 [ext_resource type="AudioStream" uid="uid://b8foh15qlu5wr" path="res://fastshot.wav" id="4_8caby"]
-[ext_resource type="PackedScene" uid="uid://cy7o6yfj0sasj" path="res://autogun.tscn" id="5_bhnal"]
 [ext_resource type="PackedScene" uid="uid://cg1d01rcxwnf6" path="res://sniper.tscn" id="6_uqwy3"]
 [ext_resource type="AudioStream" uid="uid://buu4n1fio4wnw" path="res://shothit.wav" id="8_61wwb"]
 
@@ -73,13 +72,8 @@ stream = ExtResource("8_61wwb")
 offset_right = 40.0
 offset_bottom = 23.0
 
-[node name="gun" parent="." unique_id=695912131 instance=ExtResource("5_bhnal")]
-transform = Transform3D(-3.9340203e-10, 0, -0.0089999875, 0, 0.0074999956, 0, 0.0074999942, 0, -3.2783515e-10, 0.6174011, -0.6941285, -0.54370314)
-visible = false
+[node name="gun" parent="." unique_id=58703646 instance=ExtResource("6_uqwy3")]
+transform = Transform3D(-2.1855694e-10, 0, -0.005, 0, 0.005, 0, 0.005, 0, -2.1855694e-10, 0.525, 0.2562256, 0)
 
-[node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=522166623]
-transform = Transform3D(-4.3711406e-08, 0, 1.0000006, 0, 1.0000005, 0, -1.0000005, 0, -4.3711424e-08, -72.88225, 108.277405, 7.6293945e-06)
-target_position = Vector3(0, 0, -1000)
-
-[node name="sniper2" parent="." unique_id=58703646 instance=ExtResource("6_uqwy3")]
-transform = Transform3D(-2.1855694e-10, 0, -0.005, 0, 0.005, 0, 0.005, 0, -2.1855694e-10, 0.6174011, -1.18891, -0.9399548)
+[node name="RayCast3D" type="RayCast3D" parent="gun" unique_id=1326896431]
+target_position = Vector3(-100000, 0, 0)
