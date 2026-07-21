@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://c4l06vr3ieyhe"]
+
+[ext_resource type="PackedScene" uid="uid://b1oaeqa473mng" path="res://shotgun.blend" id="1_hn68x"]
+
+[node name="shotgun" unique_id=707377525 instance=ExtResource("1_hn68x")]
+
+[node name="Light" parent="." index="0" unique_id=681285122]
+visible = false
+
+[node name="Camera" parent="." index="1" unique_id=1122315246]
+visible = false
+
+[node name="Sketchfab_model" parent="." index="2" unique_id=1949687478]
+transform = Transform3D(1, 0, 0, 0, -3.5762787e-07, 0.99999994, 0, -0.99999994, -3.5762787e-07, -444, 8.603928, 0)

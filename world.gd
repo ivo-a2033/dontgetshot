@@ -69,6 +69,7 @@ func spawn_player(id: int, paths: Dictionary, map_path: String = ""):
 	p.name = str(id)
 	p.set_multiplayer_authority(id)
 	p.custom_paths = paths
+	print(paths)
 
 	players.add_child(p)
 	p.position.z -= 10
@@ -160,7 +161,8 @@ func _cycle_weapon(direction: int):
 	custom_paths["weapon_spread"] = weapon_data["spread"]
 	custom_paths["weapon_damage"] = weapon_data["damage"]
 	custom_paths["weapon_auto"] = weapon_data["is_automatic"]
-	
+	custom_paths["shots"] = weapon_data["shots"]
+
 	_spawn_preview_character()
 
 func _spawn_preview_character():

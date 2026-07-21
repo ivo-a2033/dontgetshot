@@ -58,7 +58,8 @@ const weapon_library := [
 		"fire_rate": 0.1,
 		"spread": 0.2,
 		"damage": 15,
-		"is_automatic": true
+		"is_automatic": true,
+		"shots": 1
 	},
 	
 	{
@@ -67,8 +68,20 @@ const weapon_library := [
 		"fire_rate": 2,
 		"spread": 0.02,
 		"damage": 100,
-		"is_automatic": true
+		"is_automatic": false,
+		"shots": 1
 	},
+	
+	{
+		"name": "Shotgun",
+		"path": "res://shotgun.tscn",
+		"fire_rate": .2,
+		"spread": 10,
+		"damage": 100,
+		"is_automatic": false,
+		"shots": 10
+
+	}
 	
 ]
 

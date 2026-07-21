@@ -15,7 +15,8 @@ var custom_paths := {
 	"weapon_fire_rate": 0.1,  # --- Added ---
 	"weapon_spread": 0.0,     # --- Added ---
 	"weapon_damage": 1,       # --- Added ---
-	"weapon_auto": false      # --- Added ---
+	"weapon_auto": false,      # --- Added ---
+	"shots": 1
 }
 
 
@@ -82,6 +83,9 @@ func _ready():
 
 	# --- NEW: Instantiate Weapon Model for Everyone ---
 	print(custom_paths)
+	
+	if custom_paths["shots"] > 1:
+		$AudioStreamPlayer3D.stream = load("res://shotgunshot.mp3")
 	var weapon_path: String = custom_paths.get("weapon_path", "")
 	if weapon_path != "":
 		var weapon_scene = load(weapon_path)
@@ -230,7 +234,8 @@ func _physics_process(delta):
 		shoot_cooldown -= delta
 
 	if shooting and shoot_cooldown <= 0.0 and not settings_open:
-		shoot(target_point)
+		for i in range(custom_paths["shots"]):
+			shoot(target_point)
 		shoot_cooldown = fire_rate
 
 	send_transform.rpc(global_position, rotation, $Head.rotation.x)
