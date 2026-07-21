@@ -43,35 +43,33 @@ const map_library := [
 	{
 		"name": "Rings",
 		"path": "res://map_2.tscn"
+	},
+	{
+		"name": "Industry",
+		"path": "res://industrymap.tscn"
 	}
 ]
 
 # --- NEW: Weapon Library ---
 const weapon_library := [
 	{
-		"name": "Blaster Rifle",
-		"path": "res://rifle.tscn",
+		"name": "Auto",
+		"path": "res://autogun.tscn",
 		"fire_rate": 0.1,
 		"spread": 0.2,
 		"damage": 15,
 		"is_automatic": true
 	},
+	
 	{
-		"name": "Handgun",
-		"path": "res://pistol.tscn",
-		"fire_rate": 0.4,
-		"spread": 0.05,
-		"damage": 35,
-		"is_automatic": false
+		"name": "Sniper",
+		"path": "res://sniper.tscn",
+		"fire_rate": 2,
+		"spread": 0.02,
+		"damage": 100,
+		"is_automatic": true
 	},
-	{
-		"name": "Shotgun",
-		"path": "res://shotgun.tscn",
-		"fire_rate": 0.8,
-		"spread": 2.5,
-		"damage": 12, # Multiplied per pellet in next step
-		"is_automatic": false
-	}
+	
 ]
 
 static func build_lobby_ui(lobby: Node3D, canvas: CanvasLayer, cycle_char_callable: Callable, cycle_map_callable: Callable, cycle_weapon_callable: Callable) -> void:
@@ -192,13 +190,13 @@ static func generate_preview_character(lobby: Node3D) -> Node3D:
 		var weapon_scene = load(weapon_path)
 		if weapon_scene:
 			var weapon_instance = weapon_scene.instantiate()
+			weapon_instance.scale *= .005
+			weapon_instance.rotation.y = PI/2
+			weapon_instance.position.x -= 0.5
+			weapon_instance.position.y = 1
 			# Tries to find a designated hand bone attachment or defaults to mesh base layout
-			var hand_node = base_walk_node.find_child("*Hand*", true, false)
-			if hand_node:
-				hand_node.add_child(weapon_instance)
-			else:
-				base_walk_node.add_child(weapon_instance)
-				weapon_instance.position = Vector3(0.3, 1.0, -0.5) # Fallback layout offset
+			
+			preview_player.add_child(weapon_instance)
 
 	preview_player.position = Vector3(0, 1.0, -5)
 	return preview_player

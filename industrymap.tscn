@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://bm6t6ai01pcwl"]
+
+[ext_resource type="Script" uid="uid://crgmnlgjwnpe3" path="res://shootermap.gd" id="1_tb3jf"]
+[ext_resource type="PackedScene" uid="uid://eqx8joswrb3g" path="res://low_poly_industrial_zone.glb" id="2_tb3jf"]
+[ext_resource type="Script" uid="uid://df3eth4wuvj5d" path="res://collspawner.gd" id="3_cliql"]
+
+[node name="Map1" type="Node3D" unique_id=1210424418]
+script = ExtResource("1_tb3jf")
+
+[node name="Sketchfab_Scene" parent="." unique_id=360740676 instance=ExtResource("2_tb3jf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.543579, 0)
+script = ExtResource("3_cliql")

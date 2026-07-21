@@ -5,12 +5,20 @@ const ANIM_NAME := "mixamo_com"
 const SetupHelper := preload("res://player_helper.gd")
 
 # --- Dynamic Path Config ---
+# --- Dynamic Path Config ---
 var custom_paths := {
 	"walk": "",
 	"sprint": "",
 	"crouch": "",
-	"scale": 1.0
+	"scale": 1.0,
+	"weapon_path": "",        # --- Added ---
+	"weapon_fire_rate": 0.1,  # --- Added ---
+	"weapon_spread": 0.0,     # --- Added ---
+	"weapon_damage": 1,       # --- Added ---
+	"weapon_auto": false      # --- Added ---
 }
+
+
 
 var speed = 0
 @export var sprintspeed := 12.0
@@ -26,6 +34,9 @@ var speed = 0
 @export var wall_jump_force := 10.0
 @export var wall_jump_up_force := 10.0
 @export var air_control := 5.0
+var increasing_speed_rate = 4
+var speed_ceiling = 12.0
+var speed_mod = 0.0
 
 # --- shooting ---
 @export var fire_rate := 0.1
@@ -40,7 +51,7 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2.5
 
 @onready var head = $Head
 @onready var camera = $Head/Camera3D
-@onready var raycast = $gun/RayCast3D 
+var raycast
 
 var move_nodes := {}
 var current_move_state := MoveState.IDLE
@@ -55,14 +66,47 @@ var idle_timer := 0.0
 const IDLE_GRACE := 0.5
 
 var remote_crouching := false
-@export var max_aim_distance := 50.0
+@export var max_aim_distance := 500000.0
 
 # --- settings menu ---
 var settings_open := false
 var settings_menu: CanvasLayer
+var weapon_instance
+
+var aim
+var coyote = false
+var coyote_count = 0
 
 func _ready():
 	SetupHelper.instantiate_move_nodes(self, custom_paths, move_nodes)
+
+	# --- NEW: Instantiate Weapon Model for Everyone ---
+	print(custom_paths)
+	var weapon_path: String = custom_paths.get("weapon_path", "")
+	if weapon_path != "":
+		var weapon_scene = load(weapon_path)
+		if weapon_scene:
+			weapon_instance = weapon_scene.instantiate()
+			weapon_instance.scale *= .005
+			weapon_instance.rotation.y = -PI/2
+			weapon_instance.position.x += 0.5
+			# Attach it to your gun pivot node
+			weapon_instance.name = "gun"
+
+			add_child(weapon_instance)
+			raycast = RayCast3D.new()
+			raycast.target_position.x = -1000000000
+			weapon_instance.add_child(raycast)
+			weapon_instance.force_update_transform()
+			raycast.force_update_transform()
+			
+	var start = raycast.global_position
+	var end = raycast.global_position + raycast.global_transform.basis.z * raycast.target_position.x	
+	aim = spawn_tracer(start, end, true)
+	add_child(aim)
+	# --- NEW: Override Exported Weapon Stats with Custom Paths ---
+	fire_rate = custom_paths.get("weapon_fire_rate", fire_rate)
+	spread_degrees = custom_paths.get("weapon_spread", spread_degrees)
 
 	if is_multiplayer_authority():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -71,6 +115,7 @@ func _ready():
 		add_child(settings_menu)
 		settings_menu.visible = false
 	else:
+		aim.hide()
 		$Head/Camera3D.current = false
 		$ProgressBar.hide()
 
@@ -127,32 +172,48 @@ func _unhandled_input(event):
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
+	if raycast == null:
+		return 
+		
 	$ProgressBar.value = health 
-	$gun.rotation.z = -$Head.rotation.x
+	weapon_instance.rotation.z = -$Head.rotation.x
+	
+
+
+	
+	
 	
 	if !is_multiplayer_authority():
 		_process_remote_animation(delta)
 		return
 		
+	
 	var camera_forward = -camera.global_transform.basis.z
 	var target_point = camera.global_position + (camera_forward * max_aim_distance)
 
 	var space_state = get_world_3d().direct_space_state
-	var query = PhysicsRayQueryParameters3D.create(raycast.global_position, target_point)
-	query.exclude = [get_rid()] 
+	var query = PhysicsRayQueryParameters3D.create(camera.global_position, target_point)
+	query.exclude = [get_rid()]
 	var result = space_state.intersect_ray(query)
-	
+
 	if not result.is_empty():
 		target_point = result.position
 
-	var gun_to_target = target_point - $gun.global_position
+	# Single source of truth for both the visual line and the pitch tracking
+	aim.update_line(raycast.global_position, target_point)
+
+	var gun_to_target = target_point - weapon_instance.global_position
 	var player_forward = -global_transform.basis.z
 	var horizontal_dist = gun_to_target.dot(player_forward)
 	var vertical_dist = gun_to_target.y
 	var target_pitch = atan2(vertical_dist, horizontal_dist)
-
-	$gun.rotation.z = -target_pitch
+	#weapon_instance.rotation.z = -target_pitch
 		
+		
+	print(max_aim_distance)
+	print(raycast.global_position.distance_to(target_point))
+	print(result)
+	
 	if last_h > health:
 		time_since_dmg = 0
 	last_h = health
@@ -169,7 +230,7 @@ func _physics_process(delta):
 		shoot_cooldown -= delta
 
 	if shooting and shoot_cooldown <= 0.0 and not settings_open:
-		shoot()
+		shoot(target_point)
 		shoot_cooldown = fire_rate
 
 	send_transform.rpc(global_position, rotation, $Head.rotation.x)
@@ -177,6 +238,7 @@ func _physics_process(delta):
 	var input := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input.x, 0, input.y)).normalized()
 	var is_moving := direction.length() > 0.01
+	
 
 	var is_crouching := Input.is_action_pressed("crouch")
 	var is_sprinting := Input.is_action_pressed("sprint")
@@ -188,14 +250,7 @@ func _physics_process(delta):
 	else:
 		speed = normalspeed
 
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		var normal = get_floor_normal()
-		if normal.y < 0.7:
-			velocity.x = normal.x * wall_jump_force
-			velocity.z = normal.z * wall_jump_force
-			velocity.y = wall_jump_up_force
-		else:
-			velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)
+	
 
 	var desired_state := MoveState.IDLE
 	if is_crouching:
@@ -209,23 +264,59 @@ func _physics_process(delta):
 	var deaccel = 45.0 if is_on_floor() else 2.0
 
 	if is_moving:
-		velocity.x = move_toward(velocity.x, direction.x * speed, accel * delta)
-		velocity.z = move_toward(velocity.z, direction.z * speed, accel * delta)
+		velocity.x = move_toward(velocity.x, direction.x * (speed+speed_mod), accel * delta)
+		velocity.z = move_toward(velocity.z, direction.z * (speed+speed_mod), accel * delta)
+		if speed+speed_mod < speed_ceiling:
+			speed_mod += increasing_speed_rate * delta
+			print(speed+speed_mod)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, deaccel * delta)
 		velocity.z = move_toward(velocity.z, 0.0, deaccel * delta)
+	
+	if !is_sprinting:
+		speed_mod = 0
 
 	if velocity.y > 0:
 		for col_idx in range(get_slide_collision_count()):
 			var collision := get_slide_collision(col_idx)
-			if collision.get_normal().y < -0.1:
-				velocity.y = 0
+			if collision.get_normal().y < -.1:
+				#velocity.y = 0
 				break
 
-	if not is_on_floor():
+	if not is_on_floor() or get_floor_normal().y < .1:
 		velocity.y -= gravity * delta
 		
+	if is_moving:
+		var slide_normal := get_floor_normal()
+		var horizontal_dir := Vector3(direction.x, 0.0, direction.z).normalized()
+		
+		# Project our original input direction onto the wall surface
+		var wall_tangent := horizontal_dir.slide(slide_normal).normalized()
+		
+		if wall_tangent.length() > 0.001:
+			velocity.x = wall_tangent.x * (speed+speed_mod)
+			velocity.z = wall_tangent.z *( speed+speed_mod)
+			
+			
+	var normal = get_floor_normal()
+	if normal.y < 0.7 and is_on_floor():
+		velocity.y = 0
+	if Input.is_action_just_pressed("ui_accept") and coyote:
+		if normal.y < 0.7:
+			velocity.x = normal.x * wall_jump_force
+			velocity.z = normal.z * wall_jump_force
+		velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)
+		
+	if is_on_floor():
+		coyote_count = .2
+	else:
+		coyote_count -= delta
+		
+	coyote = coyote_count > 0
+	
 	move_and_slide()
+	
+	$Label.text = str(speed + speed_mod)
 
 func _process_remote_animation(delta):
 	if remote_crouching:
@@ -292,32 +383,50 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 	rotation = rot
 	$Head.rotation.x = pitch
 
-func shoot():
+func shoot(target_point: Vector3):
 	$AudioStreamPlayer3D.play()
-	var original_rot = raycast.rotation
+
+	var origin = raycast.global_position
+	var forward = (target_point - origin).normalized()
+
+	# Build a basis perpendicular to forward for spread
+	var right = forward.cross(Vector3.UP).normalized()
+	if right.length() < 0.01:
+		right = forward.cross(Vector3.FORWARD).normalized()
+	var up = right.cross(forward).normalized()
+
 	var spread_rad = deg_to_rad(spread_degrees)
-	raycast.rotation.x += randf_range(-spread_rad, spread_rad)
-	raycast.rotation.y += randf_range(-spread_rad, spread_rad)
+	var spread_dir = (forward
+		+ right * randf_range(-spread_rad, spread_rad)
+		+ up * randf_range(-spread_rad, spread_rad)
+	).normalized()
 
-	raycast.force_raycast_update()
-	var start = raycast.global_position
-	var end = raycast.global_transform * raycast.target_position
+	var end = origin + spread_dir * max_aim_distance
 
-	if raycast.is_colliding():
-		var hit = raycast.get_collider()
+	var space_state = get_world_3d().direct_space_state
+	var query = PhysicsRayQueryParameters3D.create(origin, end)
+	query.exclude = [get_rid()]
+	var result = space_state.intersect_ray(query)
+
+	var start = origin
+	if not result.is_empty():
+		end = result.position
+		var hit = result.collider
 		if hit is CharacterBody3D:
 			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
 			$AudioStreamPlayer3D2.play()
-		end = raycast.get_collision_point()
 
-	raycast.rotation = original_rot
 	spawn_tracer.rpc(start, end)
 
 @rpc("any_peer", "call_local", "unreliable")
-func spawn_tracer(start: Vector3, end: Vector3):
+func spawn_tracer(start: Vector3, end: Vector3, permanent=false):
 	var tracer = preload("res://Tracer.tscn").instantiate()
-	add_child(tracer)
-	tracer.setup(start, end)
+	if not permanent:
+		add_child(tracer)
+	#tracer.top_level = true   # <-- ignore parent's transform entirely
+	tracer.setup(start, end, permanent)
+	
+	return tracer
 
 func take_damage(amount: int):
 	health -= amount

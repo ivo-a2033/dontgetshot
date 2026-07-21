@@ -10,7 +10,7 @@ var timer = 0
 
 var current_selected_index := 0
 var current_map_index := 0
-var current_weapon_index := 0 # --- NEW ---
+var current_weapon_index := 0 
 var custom_paths := {
 	"weapon_path": "",
 	"weapon_fire_rate": 0.1,
@@ -26,10 +26,16 @@ func _ready():
 	multiplayer.peer_disconnected.connect(_peer_disconnected)
 	
 	LobbyHelper.build_lobby_ui(self, $CanvasLayer, _cycle_character, _cycle_map, _cycle_weapon)
-	_spawn_preview_character()
+	
+	# Force initialization of custom_paths with index 0 data on startup
+	_cycle_character(0)
+	_cycle_weapon(0)
 	_spawn_preview_map()
 
 func _physics_process(delta: float) -> void:
+	
+	if preview_player:
+		preview_player.get_node("Head").rotate(Vector3(0,1,0), .01)
 	timer += delta
 	if timer > 3 and is_multiplayer_authority():
 		timer = 0
@@ -78,6 +84,7 @@ func spawn_player(id: int, paths: Dictionary, map_path: String = ""):
 
 @rpc("any_peer", "call_local", "reliable")
 func tell_server_my_character(paths: Dictionary, client_map_path: String = ""):
+	print(paths) # This will now show BOTH weapon and character paths
 	if not multiplayer.is_server(): return
 	var sender_id = multiplayer.get_remote_sender_id()
 	
@@ -104,6 +111,14 @@ func _cycle_character(direction: int):
 		current_selected_index = LobbyHelper.character_library.size() - 1
 	elif current_selected_index >= LobbyHelper.character_library.size():
 		current_selected_index = 0
+		
+	# --- FIX: Populate the character data into custom_paths ---
+	var char_data = LobbyHelper.character_library[current_selected_index]
+	custom_paths["walk"] = char_data.get("walk", "")
+	custom_paths["sprint"] = char_data.get("sprint", "")
+	custom_paths["crouch"] = char_data.get("crouch", "")
+	custom_paths["scale"] = char_data.get("scale", 1.0)
+	
 	_spawn_preview_character()
 
 func _cycle_map(direction: int):
@@ -123,7 +138,6 @@ func _cycle_map(direction: int):
 		map_label.text = " Select Map: " + LobbyHelper.map_library[current_map_index]["name"] + " "
 	_spawn_preview_map()
 
-# --- NEW: Cycle Weapon System ---
 func _cycle_weapon(direction: int):
 	current_weapon_index += direction
 	if current_weapon_index < 0:
@@ -140,7 +154,6 @@ func _cycle_weapon(direction: int):
 	if weapon_label:
 		weapon_label.text = " Select Weapon: " + LobbyHelper.weapon_library[current_weapon_index]["name"] + " "
 	
-	# Update dictionary data to send along with custom character setup keys
 	var weapon_data = LobbyHelper.weapon_library[current_weapon_index]
 	custom_paths["weapon_path"] = weapon_data["path"]
 	custom_paths["weapon_fire_rate"] = weapon_data["fire_rate"]
@@ -169,7 +182,6 @@ func _spawn_preview_map():
 
 @rpc("any_peer", "call_local", "reliable")
 func shoot_rpc(hit_id: int):
-	# Pull target damage scaling configuration from sender's active weapon attributes
 	var sender_id = multiplayer.get_remote_sender_id()
 	var damage = 1
 	if player_nodes.has(sender_id):

@@ -2,10 +2,13 @@
 
 [ext_resource type="PackedScene" uid="uid://c8a0u3qlp5ci3" path="res://autogun.blend" id="1_wxvhn"]
 
-[node name="autogun" unique_id=695912131 instance=ExtResource("1_wxvhn")]
+[node name="gun" unique_id=695912131 instance=ExtResource("1_wxvhn")]
 
 [node name="Light" parent="." index="0" unique_id=1992287643]
 visible = false
 
 [node name="Camera" parent="." index="1" unique_id=264231803]
 visible = false
+
+[node name="combined_assets_1__0" parent="Sketchfab_model/combined_assets_1_fbx/RootNode/combined_assets_1" parent_id_path=PackedInt32Array(944020423) index="0" unique_id=1220280602]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7911673e-07, -1.0600871)

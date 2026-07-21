@@ -16,7 +16,9 @@ func _on_host_pressed():
 	is_server = true
 	
 	var lobby = get_parent()
-	var chosen_paths = lobby.LobbyHelper.character_library[lobby.current_selected_index]
+	
+	# --- FIX: Send the combined lobby custom_paths instead of just character library data ---
+	var chosen_paths = lobby.custom_paths
 	
 	var default_map_node = lobby.get_node_or_null("Map1")
 	if default_map_node:
@@ -59,8 +61,10 @@ func _on_join_pressed():
 			lobby.preview_map.queue_free()
 			lobby.preview_map = null
 			
-		var chosen_paths = lobby.LobbyHelper.character_library[lobby.current_selected_index]
-		# Send character selection to server (server will reply with spawn_player containing the correct map)
+		# --- FIX: Pass the combined paths dictionary here too ---
+		var chosen_paths = lobby.custom_paths
+		
+		# Send character AND weapon selection to server
 		lobby.tell_server_my_character.rpc(chosen_paths)
 	)
 
