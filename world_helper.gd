@@ -47,6 +47,10 @@ const map_library := [
 	{
 		"name": "Industry",
 		"path": "res://industrymap.tscn"
+	},
+	{
+		"name": "Bridge",
+		"path": "res://arenamap.tscn"
 	}
 ]
 

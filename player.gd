@@ -32,7 +32,7 @@ var speed = 0
 @export var zoom_sensitivity := 1.2
 
 # --- Wall Jumping Configuration ---
-@export var wall_jump_force := 10.0
+@export var wall_jump_force := 15.0
 @export var wall_jump_up_force := 10.0
 @export var air_control := 5.0
 var increasing_speed_rate = 4
@@ -77,7 +77,7 @@ var weapon_instance
 var aim
 var coyote = false
 var coyote_count = 0
-
+var normals_list = []
 func _ready():
 	SetupHelper.instantiate_move_nodes(self, custom_paths, move_nodes)
 
@@ -303,11 +303,18 @@ func _physics_process(delta):
 			velocity.z = wall_tangent.z *( speed+speed_mod)
 			
 			
-	var normal = get_floor_normal()
+	normals_list.append(get_floor_normal())
+	if len(normals_list) > 0.1 / delta:
+		normals_list.remove_at(0)
+	var sum = Vector3.ZERO
+	for n in normals_list:
+		sum += n
+	var normal = sum/len(normals_list)
 	if normal.y < 0.7 and is_on_floor():
 		velocity.y = 0
+		
 	if Input.is_action_just_pressed("ui_accept") and coyote:
-		if normal.y < 0.7:
+		if normal.y < 0.7 or true:
 			velocity.x = normal.x * wall_jump_force
 			velocity.z = normal.z * wall_jump_force
 		velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)
@@ -321,7 +328,7 @@ func _physics_process(delta):
 	
 	move_and_slide()
 	
-	$Label.text = str(speed + speed_mod)
+	$Label.text = str(normal)
 
 func _process_remote_animation(delta):
 	if remote_crouching:

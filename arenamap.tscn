@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://gsvaxi1j6y3p"]
+
+[ext_resource type="Script" uid="uid://crgmnlgjwnpe3" path="res://shootermap.gd" id="1_tn2bd"]
+[ext_resource type="PackedScene" uid="uid://vcib5srevebl" path="res://station__arena.glb" id="2_dabbg"]
+[ext_resource type="Script" uid="uid://df3eth4wuvj5d" path="res://collspawner.gd" id="3_lwt0r"]
+
+[node name="Map1" type="Node3D" unique_id=1210424418]
+script = ExtResource("1_tn2bd")
+
+[node name="Sketchfab_Scene" parent="." unique_id=1307240185 instance=ExtResource("2_dabbg")]
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 0, -8.7146, 0)
+script = ExtResource("3_lwt0r")
