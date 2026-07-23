@@ -163,6 +163,11 @@ static func build_lobby_ui(lobby: Node3D, canvas: CanvasLayer, cycle_char_callab
 	weapon_label.show_behind_parent = true
 	weapon_label.add_theme_stylebox_override("normal", style)
 
+	# Hand the label refs back to World so it doesn't have to rediscover
+	# them later by scanning children for a matching position.
+	lobby.map_label = map_label
+	lobby.weapon_label = weapon_label
+
 static func generate_preview_character(lobby: Node3D) -> Node3D:
 	var char_data: Dictionary = character_library[lobby.current_selected_index]
 	var model_scale: float = char_data.get("scale", 1.0)

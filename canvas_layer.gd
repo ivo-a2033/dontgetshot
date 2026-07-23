@@ -1,84 +1,25 @@
 extends CanvasLayer
 
+# This node is a pure UI shell. It owns no game state and reaches into no
+# other node. It only reports what the player did (signals) and exposes
+# its own controls (ip text, slider values) for World to read/write.
+
+signal host_requested
+signal join_requested(ip: String)
+
 var is_server := false
 
 @onready var ip_edit = $IPEdit
+@onready var h_slider = $HSlider
+@onready var h_slider2 = $HSlider2
 
 func _ready():
-	$Host.pressed.connect(_on_host_pressed)
-	$Join.pressed.connect(_on_join_pressed)
-	
-	$HSlider.value = get_parent().get_node("WorldEnvironment").environment.background_energy_multiplier * 100
-	$HSlider2.value = get_parent().get_node("DirectionalLight3D").light_energy * 100
+	$Host.pressed.connect(func(): host_requested.emit())
+	$Join.pressed.connect(func(): join_requested.emit(ip_edit.text))
 
-func _process(delta: float) -> void:
-	if visible:
-		get_parent().get_node("WorldEnvironment").environment.background_energy_multiplier = $HSlider.value / 100.0
-		get_parent().get_node("DirectionalLight3D").light_energy  = $HSlider2.value / 100.0
+func set_sliders(bg_energy: float, light_energy: float) -> void:
+	h_slider.value = bg_energy * 100
+	h_slider2.value = light_energy * 100
 
-func _on_host_pressed():
-	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(7777)
-
-	multiplayer.multiplayer_peer = peer
-	is_server = true
-	
-	var lobby = get_parent()
-	
-	# --- FIX: Send the combined lobby custom_paths instead of just character library data ---
-	var chosen_paths = lobby.custom_paths
-	
-	var default_map_node = lobby.get_node_or_null("Map1")
-	if default_map_node:
-		default_map_node.queue_free()
-		
-	if lobby.preview_map:
-		lobby.preview_map.queue_free()
-		lobby.preview_map = null
-
-	var map_data = lobby.LobbyHelper.map_library[lobby.current_map_index]
-	var map_scene = load(map_data["path"])
-	var active_map = map_scene.instantiate()
-	active_map.name = "ActiveMap"
-	lobby.add_child(active_map)
-
-	lobby.spawn_player(1, chosen_paths)
-
-	hide()
-	
-	if active_map.has_method("init_world"):
-		active_map.init_world()
-
-func _on_join_pressed():
-	print("join")
-	var peer = ENetMultiplayerPeer.new()
-	if ip_edit.text == "":
-		peer.create_client("192.168.1.72", 7777)
-	else:
-		peer.create_client(ip_edit.text, 7777)
-
-	peer.get_peer(1).set_timeout(0, 0, 2000)
-
-	multiplayer.multiplayer_peer = peer
-	is_server = false
-
-	multiplayer.connected_to_server.connect(func():
-		var lobby = get_parent()
-		
-		if lobby.preview_map:
-			lobby.preview_map.queue_free()
-			lobby.preview_map = null
-			
-		# --- FIX: Pass the combined paths dictionary here too ---
-		var chosen_paths = lobby.custom_paths
-		
-		# Send character AND weapon selection to server
-		lobby.tell_server_my_character.rpc(chosen_paths)
-	)
-
-	multiplayer.connection_failed.connect(func():
-		multiplayer.multiplayer_peer = null
-		show()
-	)
-
-	hide()
+func get_slider_ratios() -> Vector2:
+	return Vector2(h_slider.value / 100.0, h_slider2.value / 100.0)

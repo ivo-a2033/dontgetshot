@@ -21,6 +21,11 @@ var custom_paths := {
 var preview_player: Node3D = null
 var preview_map: Node3D = null
 
+# Filled in by LobbyHelper.build_lobby_ui so _cycle_map/_cycle_weapon don't
+# have to re-discover them by scanning children every time.
+var map_label: Label = null
+var weapon_label: Label = null
+
 func _ready():
 	$Button.pressed.connect(reset_to_lobby)
 	multiplayer.peer_connected.connect(_peer_connected)
@@ -28,16 +33,29 @@ func _ready():
 	
 	LobbyHelper.build_lobby_ui(self, $CanvasLayer, _cycle_character, _cycle_map, _cycle_weapon)
 	
+	$CanvasLayer.host_requested.connect(_on_host_requested)
+	$CanvasLayer.join_requested.connect(_on_join_requested)
+	$CanvasLayer.set_sliders(
+		$WorldEnvironment.environment.background_energy_multiplier,
+		$DirectionalLight3D.light_energy
+	)
+	
 	# Force initialization of custom_paths with index 0 data on startup
 	_cycle_character(0)
 	_cycle_weapon(0)
 	_spawn_preview_map()
 
+func _process(delta: float) -> void:
+	if $CanvasLayer.visible:
+		var ratios = $CanvasLayer.get_slider_ratios()
+		$WorldEnvironment.environment.background_energy_multiplier = ratios.x
+		$DirectionalLight3D.light_energy = ratios.y
+
 func _physics_process(delta: float) -> void:
 	
 	for p in players.get_children():
 		if p.health <= 0 and p.is_multiplayer_authority():
-			print(p, "died")
+			$Button.text = "YOU DEAD BOY"
 	
 	if preview_player:
 		preview_player.get_node("Head").rotate(Vector3(0,1,0), .01)
@@ -58,7 +76,72 @@ func _clear_preview():
 	if preview_map:
 		preview_map.queue_free()
 		preview_map = null
+
+# --- Host / Join control flow (moved verbatim from canvas_layer.gd) ---
+
+func _on_host_requested():
+	var peer = ENetMultiplayerPeer.new()
+	peer.create_server(7777)
+
+	multiplayer.multiplayer_peer = peer
+	$CanvasLayer.is_server = true
+	
+	var chosen_paths = custom_paths
+	
+	var default_map_node = get_node_or_null("Map1")
+	if default_map_node:
+		default_map_node.queue_free()
 		
+	if preview_map:
+		preview_map.queue_free()
+		preview_map = null
+
+	var map_data = LobbyHelper.map_library[current_map_index]
+	var map_scene = load(map_data["path"])
+	var active_map = map_scene.instantiate()
+	active_map.name = "ActiveMap"
+	add_child(active_map)
+
+	spawn_player(1, chosen_paths)
+
+	$CanvasLayer.hide()
+	
+	if active_map.has_method("init_world"):
+		active_map.init_world()
+
+func _on_join_requested(ip: String):
+	print("join")
+	var peer = ENetMultiplayerPeer.new()
+	if ip == "":
+		peer.create_client("192.168.1.85", 7777) #72
+	else:
+		peer.create_client(ip, 7777)
+
+	peer.get_peer(1).set_timeout(0, 0, 2000)
+
+	multiplayer.multiplayer_peer = peer
+	$CanvasLayer.is_server = false
+
+	multiplayer.connected_to_server.connect(func():
+		if preview_map:
+			preview_map.queue_free()
+			preview_map = null
+			
+		var chosen_paths = custom_paths
+		
+		# Send character AND weapon selection to server
+		tell_server_my_character.rpc(chosen_paths)
+	)
+
+	multiplayer.connection_failed.connect(func():
+		multiplayer.multiplayer_peer = null
+		$CanvasLayer.show()
+	)
+
+	$CanvasLayer.hide()
+
+# --- Multiplayer spawn / sync ---
+
 @rpc("authority", "call_local", "reliable")
 func spawn_player(id: int, paths: Dictionary, map_path: String = ""):
 	if player_nodes.has(id):
@@ -111,6 +194,8 @@ func _peer_disconnected(id):
 		player_nodes[id].queue_free()
 		player_nodes.erase(id)
 
+# --- Lobby selection cycling ---
+
 func _cycle_character(direction: int):
 	current_selected_index += direction
 	if current_selected_index < 0:
@@ -118,7 +203,6 @@ func _cycle_character(direction: int):
 	elif current_selected_index >= LobbyHelper.character_library.size():
 		current_selected_index = 0
 		
-	# --- FIX: Populate the character data into custom_paths ---
 	var char_data = LobbyHelper.character_library[current_selected_index]
 	custom_paths["walk"] = char_data.get("walk", "")
 	custom_paths["sprint"] = char_data.get("sprint", "")
@@ -134,12 +218,6 @@ func _cycle_map(direction: int):
 	elif current_map_index >= LobbyHelper.map_library.size():
 		current_map_index = 0
 		
-	var map_label = null
-	for child in $CanvasLayer.get_children():
-		if child is HBoxContainer and child.position.y == 100:
-			map_label = child.get_node_or_null("MapLabel")
-			break
-	
 	if map_label:
 		map_label.text = " Select Map: " + LobbyHelper.map_library[current_map_index]["name"] + " "
 	_spawn_preview_map()
@@ -151,12 +229,6 @@ func _cycle_weapon(direction: int):
 	elif current_weapon_index >= LobbyHelper.weapon_library.size():
 		current_weapon_index = 0
 		
-	var weapon_label = null
-	for child in $CanvasLayer.get_children():
-		if child is HBoxContainer and child.position.y == 150:
-			weapon_label = child.get_node_or_null("WeaponLabel")
-			break
-	
 	if weapon_label:
 		weapon_label.text = " Select Weapon: " + LobbyHelper.weapon_library[current_weapon_index]["name"] + " "
 	
