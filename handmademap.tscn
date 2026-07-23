@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://debwxsvxvtq7a"]
+
+[ext_resource type="Script" uid="uid://crgmnlgjwnpe3" path="res://shootermap.gd" id="1_alimf"]
+[ext_resource type="Texture2D" uid="uid://pod5vkincm81" path="res://brick.jpg" id="2_4kjs7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8q7yx"]
+albedo_texture = ExtResource("2_4kjs7")
+uv1_scale = Vector3(100, 100, 100)
+
+[node name="Map1" type="Node3D" unique_id=1210424418]
+script = ExtResource("1_alimf")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1095493933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.0183105, 0)
+use_collision = true
+size = Vector3(200, 1, 200)
+material = SubResource("StandardMaterial3D_8q7yx")

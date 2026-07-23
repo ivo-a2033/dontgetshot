@@ -22,6 +22,7 @@ var preview_player: Node3D = null
 var preview_map: Node3D = null
 
 func _ready():
+	$Button.pressed.connect(reset_to_lobby)
 	multiplayer.peer_connected.connect(_peer_connected)
 	multiplayer.peer_disconnected.connect(_peer_disconnected)
 	
@@ -37,9 +38,11 @@ func _physics_process(delta: float) -> void:
 	if preview_player:
 		preview_player.get_node("Head").rotate(Vector3(0,1,0), .01)
 	timer += delta
-	if timer > 3 and is_multiplayer_authority():
+	
+	if timer > 3 and multiplayer.is_server():
 		timer = 0
-		change_sun.rpc($DirectionalLight3D.rotation.x)    
+		print("A",  $WorldEnvironment.environment.background_energy_multiplier)
+		change_sun.rpc($DirectionalLight3D.rotation.x, $DirectionalLight3D.light_energy, $WorldEnvironment.environment.background_energy_multiplier)    
 		
 	$DirectionalLight3D.rotation.x += 5.0/180.0*PI / 3.0 * delta
 	$DirectionalLight3D.light_energy = max(0, -sin($DirectionalLight3D.rotation.x))
@@ -69,7 +72,6 @@ func spawn_player(id: int, paths: Dictionary, map_path: String = ""):
 	p.name = str(id)
 	p.set_multiplayer_authority(id)
 	p.custom_paths = paths
-	print(paths)
 
 	players.add_child(p)
 	p.position.z -= 10
@@ -85,7 +87,6 @@ func spawn_player(id: int, paths: Dictionary, map_path: String = ""):
 
 @rpc("any_peer", "call_local", "reliable")
 func tell_server_my_character(paths: Dictionary, client_map_path: String = ""):
-	print(paths) # This will now show BOTH weapon and character paths
 	if not multiplayer.is_server(): return
 	var sender_id = multiplayer.get_remote_sender_id()
 	
@@ -193,5 +194,15 @@ func shoot_rpc(hit_id: int):
 		player_nodes[hit_id].take_damage(damage)
 		
 @rpc("any_peer", "call_local", "reliable")
-func change_sun(pos: float):
+func change_sun(pos: float, light1, light2):
 	$DirectionalLight3D.rotation.x = pos
+	$DirectionalLight3D.light_energy = light1
+	$WorldEnvironment.environment.background_energy_multiplier = light2
+	
+func reset_to_lobby():
+	# Cleanly disconnect networking first
+	if multiplayer.multiplayer_peer:
+		multiplayer.multiplayer_peer.close()
+		multiplayer.multiplayer_peer = null
+
+	get_tree().reload_current_scene()

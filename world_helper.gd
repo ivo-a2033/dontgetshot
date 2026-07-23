@@ -51,6 +51,10 @@ const map_library := [
 	{
 		"name": "Bridge",
 		"path": "res://arenamap.tscn"
+	},
+	{
+		"name": "Custom",
+		"path": "res://handmademap.tscn"
 	}
 ]
 

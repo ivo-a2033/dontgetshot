@@ -79,10 +79,11 @@ var coyote = false
 var coyote_count = 0
 var normals_list = []
 func _ready():
+	
+	
 	SetupHelper.instantiate_move_nodes(self, custom_paths, move_nodes)
 
 	# --- NEW: Instantiate Weapon Model for Everyone ---
-	print(custom_paths)
 	
 	if custom_paths["shots"] > 1:
 		$AudioStreamPlayer3D.stream = load("res://shotgunshot.mp3")
@@ -213,10 +214,7 @@ func _physics_process(delta):
 	var target_pitch = atan2(vertical_dist, horizontal_dist)
 	#weapon_instance.rotation.z = -target_pitch
 		
-		
-	print(max_aim_distance)
-	print(raycast.global_position.distance_to(target_point))
-	print(result)
+
 	
 	if last_h > health:
 		time_since_dmg = 0
@@ -273,7 +271,6 @@ func _physics_process(delta):
 		velocity.z = move_toward(velocity.z, direction.z * (speed+speed_mod), accel * delta)
 		if speed+speed_mod < speed_ceiling:
 			speed_mod += increasing_speed_rate * delta
-			print(speed+speed_mod)
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, deaccel * delta)
 		velocity.z = move_toward(velocity.z, 0.0, deaccel * delta)
@@ -314,7 +311,7 @@ func _physics_process(delta):
 		velocity.y = 0
 		
 	if Input.is_action_just_pressed("ui_accept") and coyote:
-		if normal.y < 0.7 or true:
+		if true:
 			velocity.x = normal.x * wall_jump_force
 			velocity.z = normal.z * wall_jump_force
 		velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)

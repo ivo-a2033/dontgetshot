@@ -7,6 +7,14 @@ var is_server := false
 func _ready():
 	$Host.pressed.connect(_on_host_pressed)
 	$Join.pressed.connect(_on_join_pressed)
+	
+	$HSlider.value = get_parent().get_node("WorldEnvironment").environment.background_energy_multiplier * 100
+	$HSlider2.value = get_parent().get_node("DirectionalLight3D").light_energy * 100
+
+func _process(delta: float) -> void:
+	if visible:
+		get_parent().get_node("WorldEnvironment").environment.background_energy_multiplier = $HSlider.value / 100.0
+		get_parent().get_node("DirectionalLight3D").light_energy  = $HSlider2.value / 100.0
 
 func _on_host_pressed():
 	var peer = ENetMultiplayerPeer.new()
