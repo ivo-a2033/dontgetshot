@@ -35,6 +35,10 @@ func _ready():
 
 func _physics_process(delta: float) -> void:
 	
+	for p in players.get_children():
+		if p.health <= 0 and p.is_multiplayer_authority():
+			print(p, "died")
+	
 	if preview_player:
 		preview_player.get_node("Head").rotate(Vector3(0,1,0), .01)
 	timer += delta
