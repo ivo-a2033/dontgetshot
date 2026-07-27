@@ -5,4 +5,4 @@
 !.godot/imported/
 !.godot/imported/**
 export/
-
+*.blend filter=lfs diff=lfs merge=lfs -text
