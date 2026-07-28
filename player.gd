@@ -36,6 +36,7 @@ var increasing_speed_rate = 4
 var speed_ceiling = 12.0
 var speed_mod = 0.0
 
+
 # --- shooting ---
 @export var fire_rate := 0.1
 var shooting := false
@@ -75,6 +76,8 @@ var aim
 var coyote = false
 var coyote_count = 0
 var normals_list = []
+var sight_on = false
+
 func _ready():
 	$AudioStreamPlayer3D.max_polyphony = 10
 	
@@ -158,6 +161,17 @@ func _unhandled_input(event):
 		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_O and is_multiplayer_authority():
 		$Head/SpotLight3D.visible = not $Head/SpotLight3D.visible
+
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Q and is_multiplayer_authority():
+		sight_on = not sight_on
+		if sight_on:
+			$Head.z = 4
+			spread_degrees = custom_paths.get("weapon_spread", spread_degrees) * .2
+			
+		else:
+			$Head.z = -0.4
+			spread_degrees = custom_paths.get("weapon_spread", spread_degrees)
+
 	if settings_open:
 		return
 
@@ -320,6 +334,9 @@ func _physics_process(delta):
 		coyote_count -= delta
 		
 	coyote = coyote_count > 0
+	
+	if sight_on:
+		velocity = 0.3 * velocity
 	
 	move_and_slide()
 	

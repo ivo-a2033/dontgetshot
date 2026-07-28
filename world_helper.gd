@@ -69,7 +69,7 @@ const weapon_library := [
 		"name": "Auto",
 		"path": "res://autogun.tscn",
 		"fire_rate": 0.1,
-		"spread": 0.2,
+		"spread": 2,
 		"damage": 15,
 		"is_automatic": true,
 		"shots": 1
