@@ -5,7 +5,6 @@ const ANIM_NAME := "mixamo_com"
 const SetupHelper := preload("res://player_helper.gd")
 
 # --- Dynamic Path Config ---
-# --- Dynamic Path Config ---
 var custom_paths := {
 	"walk": "",
 	"sprint": "",
@@ -18,8 +17,6 @@ var custom_paths := {
 	"weapon_auto": false,      # --- Added ---
 	"shots": 1
 }
-
-
 
 var speed = 0
 @export var sprintspeed := 12.0
@@ -51,7 +48,7 @@ var collision_disable_timer := 0.0
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2.5
 
 @onready var head = $Head
-@onready var camera = $Head/Camera3D
+@onready var camera = $Head/SpringArm3D/Camera3D
 var raycast
 
 var move_nodes := {}
@@ -79,7 +76,7 @@ var coyote = false
 var coyote_count = 0
 var normals_list = []
 func _ready():
-	
+	$AudioStreamPlayer3D.max_polyphony = 10
 	
 	SetupHelper.instantiate_move_nodes(self, custom_paths, move_nodes)
 
@@ -115,13 +112,13 @@ func _ready():
 
 	if is_multiplayer_authority():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		$Head/Camera3D.current = true
+		$Head/SpringArm3D/Camera3D.current = true
 		settings_menu = SetupHelper.build_settings_menu(self)
 		add_child(settings_menu)
 		settings_menu.visible = false
 	else:
 		aim.hide()
-		$Head/Camera3D.current = false
+		$Head/SpringArm3D/Camera3D.current = false
 		$ProgressBar.hide()
 
 func _toggle_settings_menu():
@@ -142,9 +139,9 @@ func _unhandled_input(event):
 			focused = true
 		if not settings_open:
 			if event.button_index == 5:
-				$Head/Camera3D.fov *= zoom_sensitivity
+				$Head/SpringArm3D/Camera3D.fov *= zoom_sensitivity
 			if event.button_index == 4:
-				$Head/Camera3D.fov /= zoom_sensitivity
+				$Head/SpringArm3D/Camera3D.fov /= zoom_sensitivity
 			
 			var active_key = current_move_state
 			if active_key == MoveState.IDLE:
@@ -152,9 +149,9 @@ func _unhandled_input(event):
 
 			var active_node = move_nodes.get(active_key)
 			if active_node and is_multiplayer_authority():
-				active_node.visible = ($Head/Camera3D.fov >= 15.0)
+				active_node.visible = ($Head/SpringArm3D/Camera3D.fov >= 15.0)
 				
-			$Head/Camera3D.fov = clamp($Head/Camera3D.fov, 5, 360)
+			$Head/SpringArm3D/Camera3D.fov = clamp($Head/SpringArm3D/Camera3D.fov, 5, 360)
 
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Y and is_multiplayer_authority():
 		_toggle_settings_menu()
@@ -221,7 +218,7 @@ func _physics_process(delta):
 	last_h = health
 	time_since_dmg += delta
 	if time_since_dmg < 2:
-		$Head/Camera3D/CanvasLayer/ColorRect.material.set_shader_parameter("intensity", time_since_dmg)
+		$Head/SpringArm3D/Camera3D/CanvasLayer/ColorRect.material.set_shader_parameter("intensity", time_since_dmg)
 
 	if collision_disable_timer > 0.0:
 		collision_disable_timer -= delta
@@ -446,13 +443,13 @@ func go_down(val):
 	if val:
 		$MeshInstance3D.position.y = -0.4
 		$Head.position.y = 0.8
-		if has_node("Head/Camera3D/gun"):
-			$Head/Camera3D/gun.position.y = -0.5
+		if has_node("Head/SpringArm3D/Camera3D/gun"):
+			$Head/SpringArm3D/Camera3D/gun.position.y = -0.5
 	else:
 		$MeshInstance3D.position.y = 0
 		$Head.position.y = 1.28
-		if has_node("Head/Camera3D/gun"):
-			$Head/Camera3D/gun.position.y = 0.3
+		if has_node("Head/SpringArm3D/Camera3D/gun"):
+			$Head/SpringArm3D/Camera3D/gun.position.y = 0.3
 
 	if !is_multiplayer_authority():
 		remote_crouching = bool(val)

@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://b143aaokgkr8"]
+
+[ext_resource type="Script" uid="uid://crgmnlgjwnpe3" path="res://shootermap.gd" id="1_2qngs"]
+[ext_resource type="Texture2D" uid="uid://pod5vkincm81" path="res://brick.jpg" id="2_wywaa"]
+[ext_resource type="ArrayMesh" uid="uid://c7r56biapswdk" path="res://tunnels.obj" id="3_wywaa"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8q7yx"]
+albedo_texture = ExtResource("2_wywaa")
+uv1_scale = Vector3(100, 100, 100)
+
+[node name="Map1" type="Node3D" unique_id=1210424418]
+script = ExtResource("1_2qngs")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1095493933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.0183105, 0)
+use_collision = true
+size = Vector3(200, 1, 200)
+material = SubResource("StandardMaterial3D_8q7yx")
+
+[node name="Tunnels" type="MeshInstance3D" parent="." unique_id=258307035]
+transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, 24.500969, 0.5144148, 7.5303955)
+mesh = ExtResource("3_wywaa")

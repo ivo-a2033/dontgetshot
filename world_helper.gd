@@ -55,6 +55,11 @@ const map_library := [
 	{
 		"name": "Custom",
 		"path": "res://handmademap.tscn"
+	},
+	
+	{
+		"name": "Tunnels",
+		"path": "res://tunnels.tscn"
 	}
 ]
 
@@ -185,8 +190,8 @@ static func generate_preview_character(lobby: Node3D) -> Node3D:
 	preview_player.set_script(null)
 	lobby.add_child(preview_player)
 	
-	if preview_player.has_node("Head/Camera3D"):
-		preview_player.get_node("Head/Camera3D").current = true
+	if preview_player.has_node("Head/SpringArm3D/Camera3D"):
+		preview_player.get_node("Head/SpringArm3D/Camera3D").current = true
 	
 	var base_walk_node: Node3D = null
 	
