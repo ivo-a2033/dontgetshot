@@ -26,7 +26,7 @@ var speed = 0
 
 @export var jump_velocity := 0
 @export var mouse_sensitivity := 0.0025
-@export var zoom_sensitivity := 1.2
+@export var zoom_sensitivity := 1.05
 
 # --- Wall Jumping Configuration ---
 @export var wall_jump_force := 15.0
@@ -164,13 +164,17 @@ func _unhandled_input(event):
 
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Q and is_multiplayer_authority():
 		sight_on = not sight_on
+		$Head/sight2.visible = sight_on
 		if sight_on:
-			$Head.z = 4
+			#$Head.position.z = -40
 			spread_degrees = custom_paths.get("weapon_spread", spread_degrees) * .2
+			$Head/SpringArm3D/Camera3D.fov = 15
 			
 		else:
-			$Head.z = -0.4
+			#$Head.position.z = -0.4
 			spread_degrees = custom_paths.get("weapon_spread", spread_degrees)
+			$Head/SpringArm3D/Camera3D.fov = 75
+
 
 	if settings_open:
 		return

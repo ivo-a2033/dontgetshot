@@ -59,7 +59,7 @@ const map_library := [
 	
 	{
 		"name": "Tunnels",
-		"path": "res://tunnels.tscn"
+		"path": "res://bigtunnels.tscn"
 	}
 ]
 

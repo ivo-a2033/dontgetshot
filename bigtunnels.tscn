@@ -1,0 +1,90 @@
+[gd_scene format=3 uid="uid://cvbxfbann0psr"]
+
+[ext_resource type="Script" uid="uid://crgmnlgjwnpe3" path="res://shootermap.gd" id="1_5i63l"]
+[ext_resource type="Texture2D" uid="uid://ctsflt5f0smdx" path="res://kenneytextures/floor_ground_dirt.png" id="2_uh7mj"]
+[ext_resource type="Script" uid="uid://clxg88oangtr4" path="res://path_3d.gd" id="3_8v2c6"]
+[ext_resource type="Texture2D" uid="uid://cv27p0kmgj7o1" path="res://kenneytextures/floor_stone_pattern_depth.png" id="3_uh7mj"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8q7yx"]
+albedo_texture = ExtResource("2_uh7mj")
+uv1_scale = Vector3(100, 100, 100)
+
+[sub_resource type="Curve3D" id="Curve3D_4kjs7"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -7.6570525, -2.5181885, -2.6918364, 0, 0, 0, 0, 0, 0, -0.6233492, -2.5181885, 0.23414135, 0, 0, 0, 0, 0, 0, 1.4718227, -3.939869, 3.7244081, 0, 0, 0, 0, 0, 0, 1.2711258, -2.5183105, 9.1806965, 0, 0, 0, 0, 0, 0, -3.2515326, -1.0524273, 12.872698, 0, 0, 0, 0, 0, 0, -5.3802176, -12.835016, 13.795381, 0, 0, 0, 0, 0, 0, -14.064184, -9.550232, 24.939075, 0, 0, 0, 0, 0, 0, -8.872761, -2.5182388, 28.857647, 0, 0, 0, 0, 0, 0, -10.26672, -2.5181885, 38.668365),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 9
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8v2c6"]
+albedo_texture = ExtResource("3_uh7mj")
+uv1_triplanar = true
+
+[node name="Map1" type="Node3D" unique_id=1210424418]
+script = ExtResource("1_5i63l")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1095493933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.0183105, 0)
+use_collision = true
+size = Vector3(200, 1, 200)
+material = SubResource("StandardMaterial3D_8q7yx")
+
+[node name="Path3D" type="Path3D" parent="." unique_id=499450827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4085999, 0)
+curve = SubResource("Curve3D_4kjs7")
+script = ExtResource("3_8v2c6")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Path3D" unique_id=124716157]
+
+[node name="CSGPolygon3D" type="CSGPolygon3D" parent="Path3D" unique_id=1874516524]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 28.17415, -36.886223)
+polygon = PackedVector2Array(-1.1878309, 1.2587163, 1.4551915e-11, 1.725364, 1.1878309, 0.9723642, 0.7636056, -0.3851565, -1.3363094, -0.23667777, -1.2647167, -0.16603541, 0.68936586, -0.20486069, 0.90480417, 0.9147587, 0.02121115, 1.5980964, -0.82723904, 1.1102374, -1.2663891, -0.16603541, -1.3366342, -0.23460793)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_8v2c6")
+
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="Path3D" unique_id=1896630532]
+transform = Transform3D(1.3589458, 0, 2.674559, -1.5116515, 2.4748688, 0.7680715, -2.2063944, -1.6955895, 1.121071, 17.658518, 17.646864, 35.79772)
+polygon = PackedVector2Array(-1.1878309, 1.2587163, 1.4551915e-11, 1.725364, 1.1878309, 0.9723642, 0.7636056, -0.3851565, -1.3363094, -0.23667777, -1.2647167, -0.16603541, 0.68936586, -0.20486069, 0.90480417, 0.9147587, 0.02121115, 1.5980964, -0.82723904, 1.1102374, -1.2663891, -0.16603541, -1.3366342, -0.23460793)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_8v2c6")
+
+[node name="CSGPolygon3D3" type="CSGPolygon3D" parent="Path3D" unique_id=1753977257]
+transform = Transform3D(1.2323216, -1.1031351e-08, 2.7352114, -0.19502568, -2.9923646, 0.08786683, 2.7282503, -0.21390557, -1.2291853, 17.5975, 15.394974, 40.613304)
+polygon = PackedVector2Array(-1.1878309, 1.2587163, 1.4551915e-11, 1.725364, 1.1878309, 0.9723642, 0.7636056, -0.3851565, -1.3363094, -0.23667777, -1.2647167, -0.16603541, 0.68936586, -0.20486069, 0.90480417, 0.9147587, 0.02121115, 1.5980964, -0.82723904, 1.1102374, -1.2663891, -0.16603541, -1.3366342, -0.23460793)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_8v2c6")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Path3D/CSGPolygon3D3" unique_id=190588233]
+transform = Transform3D(0.13692465, -0.021669514, 0.30313885, -5.518948e-10, -0.33248487, -0.023767281, 0.30391246, 0.009762978, -0.13657612, -0.7604351, -0.63384295, -0.610322)
+operation = 2
+radius = 6.107

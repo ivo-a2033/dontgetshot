@@ -2,7 +2,9 @@
 
 [ext_resource type="Script" uid="uid://ceiphlio2c7s4" path="res://player.gd" id="1_bhnal"]
 [ext_resource type="Shader" uid="uid://c75ytp0bmd0dc" path="res://vig.gdshader" id="2_8caby"]
+[ext_resource type="PackedScene" uid="uid://dk3t3loj02xu5" path="res://sight_red_dot.glb" id="3_bhnal"]
 [ext_resource type="AudioStream" uid="uid://b0ovgexbv5a78" path="res://fastgunshot.mp3" id="3_tj0vx"]
+[ext_resource type="PackedScene" uid="uid://uy6tjlp78358" path="res://sight.tscn" id="4_uqwy3"]
 [ext_resource type="AudioStream" uid="uid://buu4n1fio4wnw" path="res://shothit.wav" id="8_61wwb"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8q7yx"]
@@ -55,6 +57,14 @@ offset_right = 720.0
 offset_bottom = 450.0
 mouse_filter = 2
 color = Color(1, 0, 0, 1)
+
+[node name="sight" parent="Head" unique_id=747168658 instance=ExtResource("3_bhnal")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.01, 0, -0.42868614, 3.8460894)
+visible = false
+
+[node name="sight2" parent="Head" unique_id=1353277100 instance=ExtResource("4_uqwy3")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.01, 0, -0.42868614, 3.42164)
+visible = false
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=291826529]
 stream = ExtResource("3_tj0vx")

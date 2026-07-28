@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://uy6tjlp78358"]
+
+[ext_resource type="PackedScene" uid="uid://dk3t3loj02xu5" path="res://sight_red_dot.glb" id="1_23mdv"]
+
+[node name="Sketchfab_Scene" unique_id=747168658 instance=ExtResource("1_23mdv")]
+
+[node name="Object_5" parent="Sketchfab_model/root/GLTF_SceneRootNode/Sight_RedDot_0" parent_id_path=PackedInt32Array(610587553) index="1" unique_id=335710285]
+visible = false
+
+[node name="Object_6" parent="Sketchfab_model/root/GLTF_SceneRootNode/Sight_RedDot_0" parent_id_path=PackedInt32Array(610587553) index="2" unique_id=570166162]
+transform = Transform3D(0.51, 0, 0, 0, 0.51, 0, 0, 0, 0.51, 0, 0, 0)
