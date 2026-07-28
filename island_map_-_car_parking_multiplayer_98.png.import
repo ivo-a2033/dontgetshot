@@ -2,24 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cs24ay38jlfxa"
-path.s3tc="res://.godot/imported/island_map_-_car_parking_multiplayer_98.png-54c88954149a145612d4061e11349d6c.s3tc.ctex"
+uid="uid://0ke7ax8ou25y"
+path="res://.godot/imported/island_map_-_car_parking_multiplayer_98.png-54c88954149a145612d4061e11349d6c.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
-}
-generator_parameters={
-"md5": "71f5711adf73acea13ff4bb7aab3b325"
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://island_map_-_car_parking_multiplayer_98.png"
-dest_files=["res://.godot/imported/island_map_-_car_parking_multiplayer_98.png-54c88954149a145612d4061e11349d6c.s3tc.ctex"]
+dest_files=["res://.godot/imported/island_map_-_car_parking_multiplayer_98.png-54c88954149a145612d4061e11349d6c.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
@@ -27,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""
@@ -41,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=1

@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cj3dhqbm5ashx"
+uid="uid://bv57s25q0mhop"
 path.s3tc="res://.godot/imported/low_poly_industrial_zone_2.png-e8dcc7fb650e60575d9b89fe647159d4.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "fcf3644dd8f795f7eff1ffa26e9ffca7"
 }
 
 [deps]

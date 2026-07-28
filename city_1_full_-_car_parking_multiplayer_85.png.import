@@ -2,13 +2,10 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cbktnsaxrk11"
+uid="uid://c0jhghkafpn4g"
 path="res://.godot/imported/city_1_full_-_car_parking_multiplayer_85.png-2a388ed899bf82228800e2df58045fc7.ctex"
 metadata={
 "vram_texture": false
-}
-generator_parameters={
-"md5": "28ddd58a835cdc82b67231df7c74f6ee"
 }
 
 [deps]
@@ -26,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=true
+mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

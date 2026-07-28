@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bf4uhl3i03ep4"
+uid="uid://c2i12grf3fjbh"
 path.s3tc="res://.godot/imported/fps_map_14.png-2013c66a240e00f2d8b5c8cfc01e76c6.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "ba21f89254a921c766574ef9b6aa02d9"
 }
 
 [deps]

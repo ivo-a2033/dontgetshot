@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cj0br24olru0u"
+uid="uid://b5lfaoxl6hk76"
 path.s3tc="res://.godot/imported/shooting_game_enviornment_map_tdm_0.png-019c58dfd3b32a0e15ecc8630c3e3077.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "2eebcf6a70f51bbbdb9578b08232a67f"
 }
 
 [deps]

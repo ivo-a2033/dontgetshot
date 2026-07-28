@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xvxih2wva7hx"
+uid="uid://cumxqmxvt8dpx"
 path.s3tc="res://.godot/imported/keith_thomson_rifle_1.png-654de859865a31fa474894c20d5427f3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "47d78a168da31185035702154216cb53"
 }
 
 [deps]
@@ -29,8 +26,8 @@ compress/normal_map=0
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=8
-roughness/src_normal="res://keith_thomson_rifle_2.jpg"
+roughness/mode=0
+roughness/src_normal=""
 process/channel_remap/red=0
 process/channel_remap/green=1
 process/channel_remap/blue=2

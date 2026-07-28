@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d4nfkpug0dfbt"
+uid="uid://clmmhs1bhskn"
 path.s3tc="res://.godot/imported/low_poly_cowboy_hat_0.png-3a71d16f56418346d055a1b69069168e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "afb53b3e47c24176ce51698c7c0952f2"
 }
 
 [deps]

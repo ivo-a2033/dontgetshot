@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://crc1rty4u1fj7"
+uid="uid://brh2iv7jmu2ls"
 path.s3tc="res://.godot/imported/tripi_tropi_1.png-5b023ef94e1dcb61360d55617c782ef3.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "c8e38706924a55c4e4c2ed0e62e9a9f3"
 }
 
 [deps]

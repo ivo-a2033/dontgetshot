@@ -156,7 +156,8 @@ func _unhandled_input(event):
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Y and is_multiplayer_authority():
 		_toggle_settings_menu()
 		return
-
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_O and is_multiplayer_authority():
+		$Head/SpotLight3D.visible = not $Head/SpotLight3D.visible
 	if settings_open:
 		return
 

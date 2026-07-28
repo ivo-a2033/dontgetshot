@@ -9,7 +9,7 @@ var player_nodes := {}
 var timer = 0
 
 var current_selected_index := 0
-var current_map_index := 0
+var current_map_index := 6
 var current_weapon_index := 0 
 var custom_paths := {
 	"weapon_path": "",

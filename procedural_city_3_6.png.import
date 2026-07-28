@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7et0einu3dda"
+uid="uid://canb3rk4wv3ab"
 path.s3tc="res://.godot/imported/procedural_city_3_6.png-6c0667d150257c105c9f47901bc18efb.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "dbcfc43ba96bc6f31751903824ad6764"
 }
 
 [deps]

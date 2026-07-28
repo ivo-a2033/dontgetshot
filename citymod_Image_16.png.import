@@ -2,14 +2,11 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0ytv88hw0cqt"
+uid="uid://cly0fiaxxc681"
 path.s3tc="res://.godot/imported/citymod_Image_16.png-5f38273810ad1e4da68c0e115613ddda.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
-}
-generator_parameters={
-"md5": "a71029fe198ba0653456ac499008a845"
 }
 
 [deps]
