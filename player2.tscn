@@ -40,11 +40,15 @@ shape = SubResource("CapsuleShape3D_8q7yx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, -0.394)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Head" unique_id=1699076878]
+light_energy = 2.0
+shadow_enabled = true
 spot_range = 100.0
 spot_angle = 30.0
 
 [node name="SpringArm3D" type="SpringArm3D" parent="Head" unique_id=34974877]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4949366, 0.058916807)
 spring_length = 4.0
+margin = 0.1
 
 [node name="Camera3D" type="Camera3D" parent="Head/SpringArm3D" unique_id=248597532]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.02279)
@@ -58,12 +62,12 @@ offset_bottom = 450.0
 mouse_filter = 2
 color = Color(1, 0, 0, 1)
 
-[node name="sight" parent="Head" unique_id=747168658 instance=ExtResource("3_bhnal")]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.01, 0, -0.42868614, 3.8460894)
+[node name="sight2" parent="Head/SpringArm3D/Camera3D" unique_id=1353277100 instance=ExtResource("4_uqwy3")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.01, 0, -0.42957413, -0.8825793)
 visible = false
 
-[node name="sight2" parent="Head" unique_id=1353277100 instance=ExtResource("4_uqwy3")]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.01, 0, -0.42868614, 3.42164)
+[node name="sight" parent="Head" unique_id=747168658 instance=ExtResource("3_bhnal")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.01, 0, -0.42868614, 3.8460894)
 visible = false
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=291826529]

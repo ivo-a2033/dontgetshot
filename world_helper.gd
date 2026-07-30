@@ -54,7 +54,7 @@ const map_library := [
 	},
 	{
 		"name": "Custom",
-		"path": "res://handmademap.tscn"
+		"path": "res://customcity.tscn"
 	},
 	
 	{

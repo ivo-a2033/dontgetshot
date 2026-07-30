@@ -79,6 +79,9 @@ var normals_list = []
 var sight_on = false
 
 func _ready():
+	
+	$Head/SpringArm3D.add_excluded_object(get_rid())
+	
 	$AudioStreamPlayer3D.max_polyphony = 10
 	
 	SetupHelper.instantiate_move_nodes(self, custom_paths, move_nodes)
@@ -152,7 +155,7 @@ func _unhandled_input(event):
 
 			var active_node = move_nodes.get(active_key)
 			if active_node and is_multiplayer_authority():
-				active_node.visible = ($Head/SpringArm3D/Camera3D.fov >= 15.0)
+				active_node.visible = ($Head/SpringArm3D/Camera3D.fov >= 25.0)
 				
 			$Head/SpringArm3D/Camera3D.fov = clamp($Head/SpringArm3D/Camera3D.fov, 5, 360)
 
@@ -161,10 +164,11 @@ func _unhandled_input(event):
 		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_O and is_multiplayer_authority():
 		$Head/SpotLight3D.visible = not $Head/SpotLight3D.visible
+		send_light.rpc($Head/SpotLight3D.visible)
 
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Q and is_multiplayer_authority():
 		sight_on = not sight_on
-		$Head/sight2.visible = sight_on
+		$Head/SpringArm3D/Camera3D/sight2.visible = sight_on
 		if sight_on:
 			#$Head.position.z = -40
 			spread_degrees = custom_paths.get("weapon_spread", spread_degrees) * .2
@@ -174,7 +178,13 @@ func _unhandled_input(event):
 			#$Head.position.z = -0.4
 			spread_degrees = custom_paths.get("weapon_spread", spread_degrees)
 			$Head/SpringArm3D/Camera3D.fov = 75
-
+			
+		var active_key = current_move_state
+		if active_key == MoveState.IDLE:
+			active_key = MoveState.WALK
+		var active_node = move_nodes.get(active_key)
+		if active_node and is_multiplayer_authority():
+			active_node.visible = ($Head/SpringArm3D/Camera3D.fov >= 25.0)
 
 	if settings_open:
 		return
@@ -309,11 +319,12 @@ func _physics_process(delta):
 		var horizontal_dir := Vector3(direction.x, 0.0, direction.z).normalized()
 		
 		# Project our original input direction onto the wall surface
-		var wall_tangent := horizontal_dir.slide(slide_normal).normalized()
-		
-		if wall_tangent.length() > 0.001:
-			velocity.x = wall_tangent.x * (speed+speed_mod)
-			velocity.z = wall_tangent.z *( speed+speed_mod)
+		if slide_normal.length_squared() != 0:
+			var wall_tangent := horizontal_dir.slide(slide_normal).normalized()
+			
+			if wall_tangent.length() > 0.001:
+				velocity.x = wall_tangent.x * (speed+speed_mod)
+				velocity.z = wall_tangent.z *( speed+speed_mod)
 			
 			
 	normals_list.append(get_floor_normal())
@@ -340,8 +351,8 @@ func _physics_process(delta):
 	coyote = coyote_count > 0
 	
 	if sight_on:
-		velocity = 0.3 * velocity
-	
+		velocity.x *= 0.8
+		velocity.z *= 0.8	
 	move_and_slide()
 	
 	$Label.text = str(normal)
@@ -410,6 +421,13 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 	global_position = pos
 	rotation = rot
 	$Head.rotation.x = pitch
+	
+@rpc("any_peer", "unreliable")
+func send_light(on: bool):
+	if is_multiplayer_authority():
+		return
+
+	$Head/SpotLight3D.visible = on
 
 func shoot(target_point: Vector3):
 	$AudioStreamPlayer3D.play()
