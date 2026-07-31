@@ -336,6 +336,9 @@ func _physics_process(delta):
 	var normal = sum/len(normals_list)
 	if normal.y < 0.7 and is_on_floor():
 		velocity.y = 0
+	
+	if Input.is_key_pressed(KEY_Z) and normal.length() > 0.1 and normal.y < 0.7:
+		velocity.y = normalspeed
 		
 	if Input.is_action_just_pressed("ui_accept") and coyote:
 		if true:

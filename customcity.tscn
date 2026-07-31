@@ -4,6 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://ctsflt5f0smdx" path="res://kenneytextures/floor_ground_dirt.png" id="2_60wfc"]
 [ext_resource type="Script" uid="uid://clxg88oangtr4" path="res://path_3d.gd" id="3_to865"]
 [ext_resource type="Texture2D" uid="uid://cv27p0kmgj7o1" path="res://kenneytextures/floor_stone_pattern_depth.png" id="4_1dnfb"]
+[ext_resource type="PackedScene" uid="uid://cmaykblrbydx6" path="res://kenneytextures/building-b.glb" id="5_60wfc"]
+[ext_resource type="Script" uid="uid://df3eth4wuvj5d" path="res://collspawner.gd" id="5_to865"]
+[ext_resource type="PackedScene" uid="uid://c80x00qiuimil" path="res://kenneytextures/building-e.glb" id="7_qlcj2"]
+[ext_resource type="PackedScene" uid="uid://bdqgvmvmkj3k5" path="res://kenneytextures/building-j.glb" id="8_7cry6"]
+[ext_resource type="PackedScene" uid="uid://d0teir68pyhmo" path="res://kenneytextures/building-skyscraper-b.glb" id="9_7cry6"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8q7yx"]
 albedo_texture = ExtResource("2_60wfc")
@@ -47,6 +52,12 @@ operation = 2
 radius = 3.0
 material = SubResource("StandardMaterial3D_to865")
 
+[node name="CSGSphere3D3" type="CSGSphere3D" parent="CSGBox3D" unique_id=2106937291]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 61.020805, -0.5737629, 2.9986992)
+operation = 2
+radius = 3.0
+material = SubResource("StandardMaterial3D_to865")
+
 [node name="Path3D" type="Path3D" parent="." unique_id=499450827]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4085999, 0)
 curve = SubResource("Curve3D_4kjs7")
@@ -69,3 +80,61 @@ path_continuous_u = true
 path_u_distance = 1.0
 path_joined = false
 material = SubResource("StandardMaterial3D_8v2c6")
+
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="Path3D/CSGPolygon3D" unique_id=710502195]
+transform = Transform3D(0.9999999, 0, 0, 0, 0.9999999, 0, 0, 0, 1, 0.8758186, 0.4081204, 5.9768896)
+operation = 2
+radius = 1.8847024
+material = SubResource("StandardMaterial3D_to865")
+
+[node name="CSGPolygon3D2" type="CSGPolygon3D" parent="Path3D" unique_id=884221117]
+transform = Transform3D(0.63752246, 0.25124148, 2.920692, -1.7880964, 2.401868, 0.18369034, -2.322989, -1.7798618, 0.660163, 16.034002, -22.339891, -34.114586)
+polygon = PackedVector2Array(-1.1878309, 1.2587163, 1.4551915e-11, 1.725364, 1.1878309, 0.9723642, 0.7636056, -0.3851565, -1.3363094, -0.23667777, -1.2647167, -0.16603541, 0.68936586, -0.20486069, 0.90480417, 0.9147587, 0.02121115, 1.5980964, -0.82723904, 1.1102374, -1.2663891, -0.16603541, -1.3366342, -0.23460793)
+mode = 2
+path_node = NodePath("..")
+path_interval_type = 0
+path_interval = 1.0
+path_simplify_angle = 0.0
+path_rotation = 2
+path_rotation_accurate = false
+path_local = false
+path_continuous_u = true
+path_u_distance = 1.0
+path_joined = false
+material = SubResource("StandardMaterial3D_8v2c6")
+
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="Path3D/CSGPolygon3D2" unique_id=1636979468]
+transform = Transform3D(1.0000005, 5.9604645e-08, -2.9802322e-08, -8.940697e-08, 1.0000001, 1.4901161e-08, 1.4901161e-08, -2.9802322e-08, 0.9999999, -6.656434, -0.7672441, -2.6770675)
+operation = 2
+radius = 1.2541553
+material = SubResource("StandardMaterial3D_to865")
+
+[node name="CollisionSpawn" type="Node3D" parent="." unique_id=1898515507]
+script = ExtResource("5_to865")
+
+[node name="building-b2" parent="CollisionSpawn" unique_id=1295900025 instance=ExtResource("5_60wfc")]
+transform = Transform3D(14.750655, 6.366078e-07, -2.7236223, -7.748604e-07, 15.000001, 4.4703484e-07, 2.7236218, 1.147953e-06, 14.750655, 4.576599, -2.518343, -33.474052)
+
+[node name="building-e2" parent="CollisionSpawn" unique_id=409457791 instance=ExtResource("7_qlcj2")]
+transform = Transform3D(6.468817, 0, 13.533454, 0, 14.999999, 0, -13.533454, 0, 6.468817, -42.411713, -2.4270477, -27.96032)
+
+[node name="building-e3" parent="CollisionSpawn" unique_id=1426548613 instance=ExtResource("7_qlcj2")]
+transform = Transform3D(14.206922, 0, 4.812832, 0, 14.999999, 0, -4.812832, 0, 14.206922, -11.363373, -2.4848337, -0.6283264)
+
+[node name="building-e4" parent="CollisionSpawn" unique_id=1234069007 instance=ExtResource("7_qlcj2")]
+transform = Transform3D(-11.702794, 0, 9.383209, 0, 14.999999, 0, -9.383209, 0, -11.702794, 44.610794, -2.4270477, -27.96032)
+
+[node name="building-j2" parent="CollisionSpawn" unique_id=1538762349 instance=ExtResource("8_7cry6")]
+transform = Transform3D(14.501644, 0, 3.8343592, 0, 14.999999, 0, -3.8343592, 0, 14.501644, 30.909119, -2.516056, 14.956009)
+
+[node name="building-j3" parent="CollisionSpawn" unique_id=1088798954 instance=ExtResource("8_7cry6")]
+transform = Transform3D(14.501644, 0, 3.8343592, 0, 14.999999, 0, -3.8343592, 0, 14.501644, 30.993744, -2.516056, 41.37671)
+
+[node name="building-skyscraper-b2" parent="CollisionSpawn" unique_id=359157061 instance=ExtResource("9_7cry6")]
+transform = Transform3D(14.269073, 0, -4.625315, 0, 14.999999, 0, 4.625315, 0, 14.269073, -36.254105, -2.5426235, 34.406754)
+
+[node name="building-skyscraper-b3" parent="CollisionSpawn" unique_id=1310573752 instance=ExtResource("9_7cry6")]
+transform = Transform3D(14.677027, 0, 3.0959377, 0, 14.999999, 0, -3.0959377, 0, 14.677027, -16.466461, -2.5426235, -29.353374)
+
+[node name="building-skyscraper-b4" parent="CollisionSpawn" unique_id=2051170584 instance=ExtResource("9_7cry6")]
+transform = Transform3D(14.829501, 0, -2.25518, 0, 14.999999, 0, 2.25518, 0, 14.829501, 69.64638, -2.5426235, 19.38282)

@@ -23,6 +23,7 @@ shader_parameter/smoothness = 0.800000038
 wall_min_slide_angle = 3.1415927
 floor_max_angle = 3.1415927
 script = ExtResource("1_bhnal")
+sprintspeed = 16.0
 normalspeed = 6.0
 crouchspeed = 3.0
 jump_velocity = 9
