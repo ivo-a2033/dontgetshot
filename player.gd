@@ -4,6 +4,12 @@ enum MoveState { IDLE, WALK, SPRINT, CROUCH }
 const ANIM_NAME := "mixamo_com"
 const SetupHelper := preload("res://player_helper.gd")
 
+var use_custom_anim_names := false  
+
+const ANIM_JOG := "Jog_Fwd"
+const ANIM_CRAWL := "Crawl"
+const ANIM_RUN := "Run Anime"
+
 # --- Dynamic Path Config ---
 var custom_paths := {
 	"walk": "",
@@ -79,7 +85,7 @@ var sight_on = false
 var wing_fuel = 100
 var gun_flipped = false
 var recoil_effect = 0
-
+var label_scene = load("label.tscn")
 func _ready():
 	
 	$wings.get_node("AnimationPlayer").play("Take 001")
@@ -90,6 +96,10 @@ func _ready():
 	SetupHelper.instantiate_move_nodes(self, custom_paths, move_nodes)
 
 	# --- NEW: Instantiate Weapon Model for Everyone ---
+	
+	for i in get_children():
+		if "sasuke" in i.name:
+			use_custom_anim_names = true
 	
 	if custom_paths["shots"] > 1:
 		$AudioStreamPlayer3D.stream = load("res://shotgunshot.mp3")
@@ -422,7 +432,16 @@ func _set_move_state(new_state: MoveState) -> void:
 		active_node.show()
 		if active_node.has_node("AnimationPlayer"):
 			if should_play:
-				active_node.get_node("AnimationPlayer").play(ANIM_NAME)
+				var anim_to_play = ANIM_NAME
+				if use_custom_anim_names:
+					match target_key:
+						MoveState.SPRINT:
+							anim_to_play = ANIM_RUN
+						MoveState.CROUCH:
+							anim_to_play = ANIM_CRAWL
+						_:
+							anim_to_play = ANIM_JOG
+				active_node.get_node("AnimationPlayer").play(anim_to_play)
 			else:
 				active_node.get_node("AnimationPlayer").stop()
 
@@ -454,7 +473,6 @@ func send_extra(light: bool, wings: bool, gun_flipped: bool):
 		get_node("gun").position.x = abs(get_node("gun").position.x )* -1
 	else:
 		get_node("gun").position.x = abs(get_node("gun").position.x )
-
 
 func shoot(target_point: Vector3):
 	
@@ -492,6 +510,10 @@ func shoot(target_point: Vector3):
 		if hit is CharacterBody3D:
 			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
 			$AudioStreamPlayer3D2.play()
+			var label = label_scene.instantiate()
+			label.text = str(custom_paths.get("weapon_damage", 1))
+			label.position = hit.position + Vector3(0,0,0) + Vector3(randf_range(-2,2), randf_range(-2,2), randf_range(-2,2))
+			get_parent().get_parent().add_child(label)
 
 	spawn_tracer.rpc(start, end)
 

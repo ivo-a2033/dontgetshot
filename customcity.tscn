@@ -119,7 +119,7 @@ transform = Transform3D(14.750655, 6.366078e-07, -2.7236223, -7.748604e-07, 15.0
 transform = Transform3D(6.468817, 0, 13.533454, 0, 14.999999, 0, -13.533454, 0, 6.468817, -42.411713, -2.4270477, -27.96032)
 
 [node name="building-e3" parent="CollisionSpawn" unique_id=1426548613 instance=ExtResource("7_qlcj2")]
-transform = Transform3D(14.206922, 0, 4.812832, 0, 14.999999, 0, -4.812832, 0, 14.206922, -11.363373, -2.4848337, -0.6283264)
+transform = Transform3D(14.206922, 0, 4.812832, 0, 14.999999, 0, -4.812832, 0, 14.206922, -17.363373, -2.4848337, 0.37167358)
 
 [node name="building-e4" parent="CollisionSpawn" unique_id=1234069007 instance=ExtResource("7_qlcj2")]
 transform = Transform3D(-11.702794, 0, 9.383209, 0, 14.999999, 0, -9.383209, 0, -11.702794, 44.610794, -2.4270477, -27.96032)

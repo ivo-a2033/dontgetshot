@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://025yy57cxbhp"]
+
+[ext_resource type="PackedScene" uid="uid://begdfdw2rjdsr" path="res://kenneytextures/sasukecrawl.glb" id="1_m1w8w"]
+
+[node name="sasukecrawl" unique_id=2133194450 instance=ExtResource("1_m1w8w")]
+
+[node name="Skeleton3D" parent="Skinned Mesh 4" parent_id_path=PackedInt32Array(1133636810) index="0" unique_id=1828740966]
+bones/1/rotation = Quaternion(0.99728113, 0.0025638363, 0.00093566976, 0.07364024)
+bones/5/rotation = Quaternion(0.024464455, -0.0009945623, -1.965e-05, 0.9997002)
+bones/6/rotation = Quaternion(-0.346562, 5.788933e-09, -5.3873485e-08, 0.9380271)
+bones/7/rotation = Quaternion(-0.19782603, 3.717969e-08, -3.958037e-08, 0.9802372)
+bones/9/rotation = Quaternion(0.012554968, -0.15936072, -0.49099326, 0.8563715)
+bones/10/rotation = Quaternion(0.81768596, 0.00014831897, -0.2545916, 0.51630694)
+bones/11/rotation = Quaternion(-0.046000086, 0.3781709, 0.05596603, 0.92289686)
+bones/14/rotation = Quaternion(0.40783414, 0.4069815, 0.43383792, 0.69269186)
+bones/15/rotation = Quaternion(0.37487537, -0.00026429546, 0.11671931, 0.9196983)
+bones/16/rotation = Quaternion(0.07151767, -0.33039805, -0.016815886, 0.940978)
+bones/17/rotation = Quaternion(0.063190065, -0.66245914, 0.11600938, 0.73735803)
+bones/18/rotation = Quaternion(0.74528134, 0.22425865, -0.6107321, 0.14584248)
+bones/19/rotation = Quaternion(0.4162223, -0.00011944711, -5.461388e-05, 0.9092629)
+bones/20/rotation = Quaternion(-0.50334686, 0.11944587, -0.076629326, 0.8523512)
+bones/23/rotation = Quaternion(0.49895376, -0.59574395, 0.2825796, 0.56239057)
+bones/24/rotation = Quaternion(0.87934613, 6.256332e-05, 0.00011540049, 0.47618312)
+bones/25/rotation = Quaternion(-0.45467559, -0.11636455, 0.0066299443, 0.8829981)
+bones/26/rotation = Quaternion(2.5911422e-05, 0.99874574, 0.05006701, -0.0005169168)
+
+[node name="AnimationPlayer" parent="." index="1" unique_id=1183763807]
+speed_scale = 2.0

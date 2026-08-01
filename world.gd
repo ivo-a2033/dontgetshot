@@ -256,6 +256,7 @@ func _spawn_preview_map():
 			preview_map = scene.instantiate()
 			preview_map.position = Vector3.ZERO
 			add_child(preview_map)
+			
 
 @rpc("any_peer", "call_local", "reliable")
 func shoot_rpc(hit_id: int):

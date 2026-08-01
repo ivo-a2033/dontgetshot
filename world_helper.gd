@@ -25,6 +25,12 @@ const character_library := [
 		"crouch": "res://naruto_c.tscn",
 		"scale": 100.0
 	},
+	{
+		"walk": "res://sasukejog.tscn",
+		"sprint": "res://sasukefast.tscn",
+		"crouch": "res://sasukecrawl.tscn",
+		"scale": 2.0
+	},
 ]
 
 const map_library := [
@@ -181,8 +187,10 @@ static func generate_preview_character(lobby: Node3D) -> Node3D:
 	var nodes_to_free := [
 		"MeshInstance3D", "ProgressBar", "gun", "OmniLight3D",
 		"AudioStreamPlayer3D", "AudioStreamPlayer3D2",
-		"Head/Camera3D/CanvasLayer", "Head/Camera3D/Label3D"
+		"Head/Camera3D/CanvasLayer", "Head/Camera3D/Label3D", "wings"
 	]
+	
+	preview_player.get_node("Head/SpringArm3D").collision_mask = 0
 	for path in nodes_to_free:
 		if preview_player.has_node(path):
 			preview_player.get_node(path).free()

@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://byayinkjt008v"]
+
+[ext_resource type="PackedScene" uid="uid://ca0gqk28gejhb" path="res://kenneytextures/sasukejog.glb" id="1_koetm"]
+
+[node name="sasukejog" unique_id=945371691 instance=ExtResource("1_koetm")]
+
+[node name="Skeleton3D" parent="Skinned Mesh 4" parent_id_path=PackedInt32Array(706962394) index="0" unique_id=332987406]
+bones/1/position = Vector3(-0.008183079, 0.030561175, 0.50796634)
+bones/1/rotation = Quaternion(0.8192605, 0.02526158, -0.029458664, 0.57210696)
+bones/3/rotation = Quaternion(0.12633584, -0.0772818, 0.08513303, 0.98530155)
+bones/4/rotation = Quaternion(0.098217115, -0.2557869, 0.03453184, 0.9611109)
+bones/5/rotation = Quaternion(0.13624467, 0.17115805, 0.01342226, 0.97568554)
+bones/8/rotation = Quaternion(-0.58620846, -0.2555173, -0.3523953, 0.68329215)
+bones/9/rotation = Quaternion(0.019348947, 0.69368845, -0.5302654, 0.4870735)
+bones/10/rotation = Quaternion(0.68049806, -0.14645296, 0.21224624, 0.6858757)
+bones/13/rotation = Quaternion(-0.596694, 0.22996914, 0.32256523, 0.69786984)
+bones/14/rotation = Quaternion(-0.09899526, -0.7338205, 0.3999698, 0.540122)
+bones/15/rotation = Quaternion(0.68182445, -0.0031659305, 0.0655902, 0.72856253)
+bones/18/rotation = Quaternion(0.9870066, 0.039349634, -0.004851657, -0.15571155)
+bones/19/rotation = Quaternion(0.22728647, 0.005255025, -0.001265701, 0.97381294)
+bones/20/rotation = Quaternion(-0.33233675, -0.014971053, 0.0073653273, 0.94301325)
+bones/21/rotation = Quaternion(-0.00013710934, 0.96430665, -0.2647874, -0.00049948803)
+bones/23/rotation = Quaternion(0.7174812, 0.030477595, -0.0037577562, 0.6959007)
+bones/24/rotation = Quaternion(0.49077958, 0.012416064, -0.0070471456, 0.8711669)
+bones/25/rotation = Quaternion(-0.6097364, 0.014204329, 0.017866159, 0.79227567)
+bones/26/rotation = Quaternion(-0.00013707856, 0.9643067, -0.26478744, -0.00049954734)

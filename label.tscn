@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cjlffn1l8y24w"]
+
+[ext_resource type="Script" uid="uid://js3xctk1aeo5" path="res://label.gd" id="1_y38sv"]
+
+[node name="Label3D" type="Label3D" unique_id=354477373]
+billboard = 1
+modulate = Color(0.7294118, 0, 0, 1)
+outline_modulate = Color(0, 0, 0, 0)
+text = "15
+"
+font_size = 128
+script = ExtResource("1_y38sv")
