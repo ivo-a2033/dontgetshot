@@ -63,7 +63,6 @@ func _physics_process(delta: float) -> void:
 	
 	if timer > 3 and multiplayer.is_server():
 		timer = 0
-		print("A",  $WorldEnvironment.environment.background_energy_multiplier)
 		change_sun.rpc($DirectionalLight3D.rotation.x, $DirectionalLight3D.light_energy, $WorldEnvironment.environment.background_energy_multiplier)    
 		
 	$DirectionalLight3D.rotation.x += 5.0/180.0*PI / 3.0 * delta
@@ -110,7 +109,6 @@ func _on_host_requested():
 		active_map.init_world()
 
 func _on_join_requested(ip: String):
-	print("join")
 	var peer = ENetMultiplayerPeer.new()
 	if ip == "":
 		peer.create_client("192.168.1.72", 7777) #72
@@ -237,7 +235,7 @@ func _cycle_weapon(direction: int):
 	custom_paths["weapon_fire_rate"] = weapon_data["fire_rate"]
 	custom_paths["weapon_spread"] = weapon_data["spread"]
 	custom_paths["weapon_damage"] = weapon_data["damage"]
-	custom_paths["weapon_auto"] = weapon_data["is_automatic"]
+	custom_paths["recoil"] = weapon_data["recoil"]
 	custom_paths["shots"] = weapon_data["shots"]
 
 	_spawn_preview_character()

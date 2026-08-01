@@ -15,7 +15,8 @@ var custom_paths := {
 	"weapon_spread": 0.0,     # --- Added ---
 	"weapon_damage": 1,       # --- Added ---
 	"weapon_auto": false,      # --- Added ---
-	"shots": 1
+	"shots": 1,
+	"recoil": 0
 }
 
 var speed = 0
@@ -23,6 +24,7 @@ var speed = 0
 @export var normalspeed := 8.0
 @export var crouchspeed := 4.0
 @export var spread_degrees := .2
+@export var recoil := 0.0
 
 @export var jump_velocity := 0
 @export var mouse_sensitivity := 0.0025
@@ -75,6 +77,8 @@ var coyote_count = 0
 var normals_list = []
 var sight_on = false
 var wing_fuel = 100
+var gun_flipped = false
+var recoil_effect = 0
 
 func _ready():
 	
@@ -114,6 +118,7 @@ func _ready():
 	# --- NEW: Override Exported Weapon Stats with Custom Paths ---
 	fire_rate = custom_paths.get("weapon_fire_rate", fire_rate)
 	spread_degrees = custom_paths.get("weapon_spread", spread_degrees)
+	recoil = custom_paths["recoil"]
 
 	if is_multiplayer_authority():
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -163,7 +168,7 @@ func _unhandled_input(event):
 		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_O and is_multiplayer_authority():
 		$Head/SpotLight3D.visible = not $Head/SpotLight3D.visible
-		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible)
+		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible, gun_flipped)
 
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Q and is_multiplayer_authority():
 		sight_on = not sight_on
@@ -203,6 +208,8 @@ func _unhandled_input(event):
 
 func _physics_process(delta):
 	
+
+	
 	if wing_fuel < 100:
 		wing_fuel += delta * 10.0
 		
@@ -212,7 +219,7 @@ func _physics_process(delta):
 		return 
 		
 	$ProgressBar.value = health 
-	weapon_instance.rotation.z = -$Head.rotation.x
+	weapon_instance.rotation.z = -$Head.rotation.x 
 	
 
 
@@ -347,7 +354,7 @@ func _physics_process(delta):
 	if is_on_floor():
 		coyote_count = .2
 		$wings.hide()
-		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible)
+		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible, gun_flipped)
 
 	else:
 		coyote_count -= delta
@@ -357,7 +364,7 @@ func _physics_process(delta):
 		velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5) * 3
 		$wings.show()
 		wing_fuel = 0
-		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible)
+		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible, gun_flipped)
 
 	if sight_on:
 		velocity.x *= 0.8
@@ -365,6 +372,11 @@ func _physics_process(delta):
 	move_and_slide()
 	
 	$Label.text = str(normal)
+	
+	if Input.is_action_just_pressed("e"):
+		get_node("gun").position.x *= -1
+		gun_flipped = not gun_flipped
+		send_extra($Head/SpotLight3D.visible, $wings.visible, gun_flipped)
 
 func _process_remote_animation(delta):
 	if remote_crouching:
@@ -432,16 +444,23 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 	$Head.rotation.x = pitch
 	
 @rpc("any_peer", "unreliable")
-func send_extra(light: bool, wings: bool):
+func send_extra(light: bool, wings: bool, gun_flipped: bool):
 	if is_multiplayer_authority():
 		return
 
 	$Head/SpotLight3D.visible = light
 	$wings.visible = wings
-
+	if gun_flipped:
+		get_node("gun").position.x = abs(get_node("gun").position.x )* -1
+	else:
+		get_node("gun").position.x = abs(get_node("gun").position.x )
 
 
 func shoot(target_point: Vector3):
+	
+	$Head.rotation.x += recoil/180.0*PI * 5 * (1.0/float(custom_paths["shots"]))
+	$Head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
+
 	$AudioStreamPlayer3D.play()
 
 	var origin = raycast.global_position

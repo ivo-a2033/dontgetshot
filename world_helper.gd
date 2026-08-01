@@ -71,7 +71,7 @@ const weapon_library := [
 		"fire_rate": 0.1,
 		"spread": 2,
 		"damage": 15,
-		"is_automatic": true,
+		"recoil": 1,
 		"shots": 1
 	},
 	
@@ -81,7 +81,7 @@ const weapon_library := [
 		"fire_rate": 2,
 		"spread": 0.02,
 		"damage": 100,
-		"is_automatic": false,
+		"recoil": 3,
 		"shots": 1
 	},
 	
@@ -91,7 +91,7 @@ const weapon_library := [
 		"fire_rate": .2,
 		"spread": 10,
 		"damage": 100,
-		"is_automatic": false,
+		"recoil": .8,
 		"shots": 10
 
 	}
