@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://dk3t3loj02xu5" path="res://sight_red_dot.glb" id="3_bhnal"]
 [ext_resource type="AudioStream" uid="uid://b0ovgexbv5a78" path="res://fastgunshot.mp3" id="3_tj0vx"]
 [ext_resource type="PackedScene" uid="uid://uy6tjlp78358" path="res://sight.tscn" id="4_uqwy3"]
+[ext_resource type="PackedScene" uid="uid://d34qf658lihar" path="res://wings.tscn" id="7_8caby"]
 [ext_resource type="AudioStream" uid="uid://buu4n1fio4wnw" path="res://shothit.wav" id="8_61wwb"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_8q7yx"]
@@ -20,8 +21,6 @@ shader_parameter/intensity = 2.0
 shader_parameter/smoothness = 0.800000038
 
 [node name="Player" type="CharacterBody3D" unique_id=573425538]
-wall_min_slide_angle = 3.1415927
-floor_max_angle = 3.1415927
 script = ExtResource("1_bhnal")
 sprintspeed = 16.0
 normalspeed = 6.0
@@ -41,6 +40,7 @@ shape = SubResource("CapsuleShape3D_8q7yx")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, -0.394)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Head" unique_id=1699076878]
+visible = false
 light_energy = 2.0
 shadow_enabled = true
 spot_range = 100.0
@@ -92,3 +92,13 @@ stream = ExtResource("8_61wwb")
 [node name="Label" type="Label" parent="." unique_id=806430979]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="wings" parent="." unique_id=1700226101 instance=ExtResource("7_8caby")]
+transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0.29227424)
+
+[node name="ProgressBar2" type="ProgressBar" parent="." unique_id=1639832652]
+offset_top = 46.0
+offset_right = 30.0
+offset_bottom = 101.0
+fill_mode = 3
+show_percentage = false

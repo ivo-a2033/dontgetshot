@@ -28,9 +28,6 @@ var speed = 0
 @export var mouse_sensitivity := 0.0025
 @export var zoom_sensitivity := 1.05
 
-# --- Wall Jumping Configuration ---
-@export var wall_jump_force := 15.0
-@export var wall_jump_up_force := 10.0
 @export var air_control := 5.0
 var increasing_speed_rate = 4
 var speed_ceiling = 12.0
@@ -77,9 +74,11 @@ var coyote = false
 var coyote_count = 0
 var normals_list = []
 var sight_on = false
+var wing_fuel = 100
 
 func _ready():
 	
+	$wings.get_node("AnimationPlayer").play("Take 001")
 	$Head/SpringArm3D.add_excluded_object(get_rid())
 	
 	$AudioStreamPlayer3D.max_polyphony = 10
@@ -164,7 +163,7 @@ func _unhandled_input(event):
 		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_O and is_multiplayer_authority():
 		$Head/SpotLight3D.visible = not $Head/SpotLight3D.visible
-		send_light.rpc($Head/SpotLight3D.visible)
+		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible)
 
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_Q and is_multiplayer_authority():
 		sight_on = not sight_on
@@ -203,6 +202,12 @@ func _unhandled_input(event):
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
+	
+	if wing_fuel < 100:
+		wing_fuel += delta * 10.0
+		
+	$ProgressBar2.value = wing_fuel
+	
 	if raycast == null:
 		return 
 		
@@ -289,7 +294,7 @@ func _physics_process(delta):
 
 	_set_move_state(desired_state)
 
-	var accel = 45.0 if is_on_floor() else air_control
+	var accel = 90.0 if is_on_floor() else air_control
 	var deaccel = 45.0 if is_on_floor() else 2.0
 
 	if is_moving:
@@ -311,7 +316,7 @@ func _physics_process(delta):
 				#velocity.y = 0
 				break
 
-	if not is_on_floor() or get_floor_normal().y < .1:
+	if not is_on_floor():
 		velocity.y -= gravity * delta
 		
 	if is_moving:
@@ -319,12 +324,12 @@ func _physics_process(delta):
 		var horizontal_dir := Vector3(direction.x, 0.0, direction.z).normalized()
 		
 		# Project our original input direction onto the wall surface
-		if slide_normal.length_squared() != 0:
-			var wall_tangent := horizontal_dir.slide(slide_normal).normalized()
-			
-			if wall_tangent.length() > 0.001:
-				velocity.x = wall_tangent.x * (speed+speed_mod)
-				velocity.z = wall_tangent.z *( speed+speed_mod)
+		#if slide_normal.length_squared() != 0:
+			#var wall_tangent := horizontal_dir.slide(slide_normal).normalized()
+			#
+			#if wall_tangent.length() > 0.001:
+				#velocity.x = wall_tangent.x * (speed+speed_mod)
+				#velocity.z = wall_tangent.z *( speed+speed_mod)
 			
 			
 	normals_list.append(get_floor_normal())
@@ -334,25 +339,26 @@ func _physics_process(delta):
 	for n in normals_list:
 		sum += n
 	var normal = sum/len(normals_list)
-	if normal.y < 0.7 and is_on_floor():
-		velocity.y = 0
 	
-	if Input.is_key_pressed(KEY_Z) and normal.length() > 0.1 and normal.y < 0.7:
-		velocity.y = normalspeed
-		
 	if Input.is_action_just_pressed("ui_accept") and coyote:
-		if true:
-			velocity.x = normal.x * wall_jump_force
-			velocity.z = normal.z * wall_jump_force
 		velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5)
-		
+
+
 	if is_on_floor():
 		coyote_count = .2
+		$wings.hide()
+		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible)
+
 	else:
 		coyote_count -= delta
 		
 	coyote = coyote_count > 0
-	
+	if Input.is_action_just_pressed("r") and coyote and wing_fuel >= 100:
+		velocity.y = jump_velocity * min(speed / float(normalspeed), 1.5) * 3
+		$wings.show()
+		wing_fuel = 0
+		send_extra.rpc($Head/SpotLight3D.visible, $wings.visible)
+
 	if sight_on:
 		velocity.x *= 0.8
 		velocity.z *= 0.8	
@@ -426,11 +432,14 @@ func send_transform(pos: Vector3, rot: Vector3, pitch: float):
 	$Head.rotation.x = pitch
 	
 @rpc("any_peer", "unreliable")
-func send_light(on: bool):
+func send_extra(light: bool, wings: bool):
 	if is_multiplayer_authority():
 		return
 
-	$Head/SpotLight3D.visible = on
+	$Head/SpotLight3D.visible = light
+	$wings.visible = wings
+
+
 
 func shoot(target_point: Vector3):
 	$AudioStreamPlayer3D.play()
