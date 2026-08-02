@@ -7,6 +7,9 @@ const LobbyHelper := preload("res://world_helper.gd")
 
 var player_nodes := {}
 var timer = 0
+var training_mode = true
+var training_timer = 0
+var doll = load("res://player_doll.tscn")
 
 var current_selected_index := 0
 var current_map_index := 6

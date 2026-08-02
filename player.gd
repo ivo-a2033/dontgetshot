@@ -163,13 +163,7 @@ func _unhandled_input(event):
 			if event.button_index == 4:
 				$Head/SpringArm3D/Camera3D.fov /= zoom_sensitivity
 			
-			var active_key = current_move_state
-			if active_key == MoveState.IDLE:
-				active_key = MoveState.WALK
-
-			var active_node = move_nodes.get(active_key)
-			if active_node and is_multiplayer_authority():
-				active_node.visible = ($Head/SpringArm3D/Camera3D.fov >= 25.0)
+			
 				
 			$Head/SpringArm3D/Camera3D.fov = clamp($Head/SpringArm3D/Camera3D.fov, 5, 360)
 
@@ -218,8 +212,14 @@ func _unhandled_input(event):
 
 func _physics_process(delta):
 	
+	var active_key = current_move_state
+	if active_key == MoveState.IDLE:
+		active_key = MoveState.WALK
 
-	
+	var active_node = move_nodes.get(active_key)
+	if active_node and is_multiplayer_authority():
+		active_node.visible = ($Head/SpringArm3D/Camera3D.fov >= 25.0)
+
 	if wing_fuel < 100:
 		wing_fuel += delta * 10.0
 		
@@ -508,12 +508,15 @@ func shoot(target_point: Vector3):
 		end = result.position
 		var hit = result.collider
 		if hit is CharacterBody3D:
-			get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
-			$AudioStreamPlayer3D2.play()
-			var label = label_scene.instantiate()
-			label.text = str(custom_paths.get("weapon_damage", 1))
-			label.position = hit.position + Vector3(0,0,0) + Vector3(randf_range(-2,2), randf_range(-2,2), randf_range(-2,2))
-			get_parent().get_parent().add_child(label)
+			if "Doll" in hit.name:
+				hit.take_damage(custom_paths.get("weapon_damage", 1))
+			else:
+				get_parent().get_parent().shoot_rpc.rpc_id(1, hit.get_multiplayer_authority())
+				$AudioStreamPlayer3D2.play()
+				var label = label_scene.instantiate()
+				label.text = str(custom_paths.get("weapon_damage", 1))
+				label.position = hit.position + Vector3(0,0,0) + Vector3(randf_range(-2,2), randf_range(-2,2), randf_range(-2,2))
+				get_parent().get_parent().add_child(label)
 
 	spawn_tracer.rpc(start, end)
 

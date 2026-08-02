@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://c2q6b7xxokgd4"]
+
+[ext_resource type="Script" uid="uid://d4er1j7nolawq" path="res://player_doll.gd" id="1_77kls"]
+[ext_resource type="PackedScene" uid="uid://qusxmemk0vac" path="res://sasukefast.tscn" id="2_6v5bn"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8q7yx"]
+radius = 0.3
+
+[node name="Doll" type="CharacterBody3D" unique_id=573425538]
+script = ExtResource("1_77kls")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1118859045]
+shape = SubResource("CapsuleShape3D_8q7yx")
+
+[node name="sasukefast" parent="." unique_id=1708677989 instance=ExtResource("2_6v5bn")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -1.0057373, -0.15670776)

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://taukd5hyvvla" path="res://player2.tscn" id="2_036b0"]
 [ext_resource type="Texture2D" uid="uid://ml4v61y7mepp" path="res://clouds_top-768x432.jpg" id="2_fj7yv"]
 [ext_resource type="Script" uid="uid://36v0fkf4dpfx" path="res://canvas_layer.gd" id="3_aqk2v"]
+[ext_resource type="PackedScene" uid="uid://c2q6b7xxokgd4" path="res://player_doll.tscn" id="5_036b0"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_w8htl"]
 panorama = ExtResource("2_fj7yv")
@@ -69,3 +70,6 @@ offset_top = 414.0
 offset_right = 713.0
 offset_bottom = 445.0
 text = "RESET"
+
+[node name="Player" parent="." unique_id=573425538 instance=ExtResource("5_036b0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.465271, 0)
