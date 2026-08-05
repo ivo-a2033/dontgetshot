@@ -60,7 +60,7 @@ var raycast
 var move_nodes := {}
 var current_move_state := MoveState.IDLE
 
-var health = 100
+var health = 1000
 var last_h = health
 var last_position = Vector3.ZERO
 var focused = true
@@ -206,8 +206,13 @@ func _unhandled_input(event):
 		if event.button_index == 1:
 			shooting = event.pressed
 	if event is InputEventMouseMotion and focused:
-		rotate_y(-event.relative.x * mouse_sensitivity)
-		head.rotate_x(-event.relative.y * mouse_sensitivity)
+		var mod_sensitive = mouse_sensitivity
+		if sight_on:
+			mod_sensitive = mouse_sensitivity * .25
+		else:
+			mod_sensitive = mouse_sensitivity
+		rotate_y(-event.relative.x * mod_sensitive)
+		head.rotate_x(-event.relative.y * mod_sensitive)
 		head.rotation.x = clamp(head.rotation.x, deg_to_rad(-89), deg_to_rad(89))
 
 func _physics_process(delta):
@@ -228,7 +233,7 @@ func _physics_process(delta):
 	if raycast == null:
 		return 
 		
-	$ProgressBar.value = health 
+	$ProgressBar.value = health * .1
 	weapon_instance.rotation.z = -$Head.rotation.x 
 	
 
@@ -381,7 +386,7 @@ func _physics_process(delta):
 		velocity.z *= 0.8	
 	move_and_slide()
 	
-	$Label.text = str(normal)
+	$Label.text = str(health)
 	
 	if Input.is_action_just_pressed("e"):
 		get_node("gun").position.x *= -1

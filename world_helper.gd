@@ -75,8 +75,8 @@ const weapon_library := [
 		"name": "Auto",
 		"path": "res://autogun.tscn",
 		"fire_rate": 0.1,
-		"spread": 2,
-		"damage": 15,
+		"spread": 1,
+		"damage": 75,
 		"recoil": 1,
 		"shots": 1
 	},
@@ -86,7 +86,7 @@ const weapon_library := [
 		"path": "res://sniper.tscn",
 		"fire_rate": 2,
 		"spread": 0.02,
-		"damage": 100,
+		"damage": 600,
 		"recoil": 3,
 		"shots": 1
 	},
@@ -94,11 +94,11 @@ const weapon_library := [
 	{
 		"name": "Shotgun",
 		"path": "res://shotgun.tscn",
-		"fire_rate": .2,
+		"fire_rate": 1,
 		"spread": 10,
-		"damage": 100,
+		"damage": 10,
 		"recoil": .8,
-		"shots": 10
+		"shots": 20
 
 	}
 	

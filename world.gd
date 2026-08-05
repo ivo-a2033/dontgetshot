@@ -114,7 +114,7 @@ func _on_host_requested():
 func _on_join_requested(ip: String):
 	var peer = ENetMultiplayerPeer.new()
 	if ip == "":
-		peer.create_client("192.168.1.72", 7777) #72
+		peer.create_client("192.168.1.85", 7777) #72
 	else:
 		peer.create_client(ip, 7777)
 
