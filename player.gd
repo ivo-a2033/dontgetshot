@@ -386,7 +386,12 @@ func _physics_process(delta):
 		velocity.z *= 0.8	
 	move_and_slide()
 	
-	$Label.text = str(health)
+	var other = null
+	for i in get_parent().get_children():
+		if self != i:
+			other = i
+	if other:
+		$Label.text = "YOU:" + str(health) + "ENEMY: " + str(other.health)
 	
 	if Input.is_action_just_pressed("e"):
 		get_node("gun").position.x *= -1
