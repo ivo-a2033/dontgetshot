@@ -96,7 +96,7 @@ const weapon_library := [
 		"path": "res://shotgun.tscn",
 		"fire_rate": 1,
 		"spread": 10,
-		"damage": 10,
+		"damage": 30,
 		"recoil": .8,
 		"shots": 20
 
