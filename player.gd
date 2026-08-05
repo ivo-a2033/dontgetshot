@@ -391,7 +391,7 @@ func _physics_process(delta):
 		if self != i:
 			other = i
 	if other:
-		$Label.text = "YOU:" + str(health) + "ENEMY: " + str(other.health)
+		$Label.text = "YOU:" + str(health) + "                                    ENEMY: " + str(other.health)
 	
 	if Input.is_action_just_pressed("e"):
 		get_node("gun").position.x *= -1

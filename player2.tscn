@@ -20,6 +20,11 @@ shader_parameter/vignette_color = Color(0.8, 0, 0, 0.6)
 shader_parameter/intensity = 2.0
 shader_parameter/smoothness = 0.800000038
 
+[sub_resource type="LabelSettings" id="LabelSettings_rgogq"]
+font_size = 32
+outline_size = 16
+outline_color = Color(0, 0, 0, 1)
+
 [node name="Player" type="CharacterBody3D" unique_id=573425538]
 script = ExtResource("1_bhnal")
 sprintspeed = 16.0
@@ -92,6 +97,9 @@ stream = ExtResource("8_61wwb")
 [node name="Label" type="Label" parent="." unique_id=806430979]
 offset_right = 40.0
 offset_bottom = 23.0
+text = "
+"
+label_settings = SubResource("LabelSettings_rgogq")
 
 [node name="wings" parent="." unique_id=1700226101 instance=ExtResource("7_8caby")]
 transform = Transform3D(0.7, 0, 0, 0, 0.7, 0, 0, 0, 0.7, 0, 0, 0.29227424)
