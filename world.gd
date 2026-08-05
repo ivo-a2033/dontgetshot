@@ -68,8 +68,8 @@ func _physics_process(delta: float) -> void:
 		timer = 0
 		change_sun.rpc($DirectionalLight3D.rotation.x, $DirectionalLight3D.light_energy, $WorldEnvironment.environment.background_energy_multiplier)    
 		
-	$DirectionalLight3D.rotation.x += 5.0/180.0*PI / 3.0 * delta
-	$DirectionalLight3D.light_energy = max(0, -sin($DirectionalLight3D.rotation.x))
+	#$DirectionalLight3D.rotation.x += 5.0/180.0*PI / 3.0 * delta
+	#$DirectionalLight3D.light_energy = max(0, -sin($DirectionalLight3D.rotation.x))
 
 func _clear_preview():
 	if preview_player:
